@@ -23,7 +23,13 @@
 		#floor1 { font-size: 10px; -moz-transform: rotate(90deg); -webkit-transform: rotate(90deg); }
 		
 		/* specify smooth animations between states */
-		* { -moz-transition: all 0.5s ease; }
+		* { 
+		    -moz-transition: all 0.5s ease; 
+		    -webkit-transition: all 0.5s ease; 
+		    -o-transition: all 0.5s ease; 
+		    -ms-transition: all 0.5s ease;
+		    transition: all 0.5s ease; 
+	    }
 	</style>
 	<script src="js/jquery-1.7.1.min.js"></script>
 	<script src="js/presenteer.js"></script>
@@ -59,11 +65,13 @@
 		</script>
 		<div class="presentationcontainer" id="presentationcontainer2">
 			<div class="presentation" id="presentation2">
-				<div id="floor5">5. We are currently at the top floor</div>
-				<div id="floor4">4. Fourth floor</div>
-				<div id="floor3">3. Whew, two floors down from floor 5</div>
-				<div id="floor2">2. Second floor here</div>
-				<div id="floor1">1. So the bottom floor has been rotated. Fun.</div>
+			    <div class="presentationextratransforms">
+				    <div id="floor5">5. We are currently at the top floor</div>
+				    <div id="floor4">4. Fourth floor</div>
+				    <div id="floor3">3. Whew, two floors down from floor 5</div>
+				    <div id="floor2">2. Second floor here</div>
+				    <div id="floor1">1. So the bottom floor has been rotated. Fun.</div>
+			    </div>
 			</div>
 		</div>
 	</div>

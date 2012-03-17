@@ -8,11 +8,7 @@ function Presenteer(canvas, elements, options) {
 		return false;
 	}
 	// Set transform-origin to top-left
-	canvas.css("-webkit-transform-origin","0px 0px"); 
-	canvas.css("-moz-transform-origin","0px 0px");
-	canvas.css("-o-transform-origin","0px 0px");
-	canvas.css("-ms-transform-origin","0px 0px");
-	canvas.css("transform-origin","0px 0px");
+	setTransformOrigin(canvas, 0, 0);
 	var canvasZoomFactor = 1;
 	var originalElements = elements;
 	var elements = []; // Array of elements to show, in order
@@ -126,9 +122,17 @@ function Presenteer(canvas, elements, options) {
 			newLeft = (viewportWidth - (outerScrollWidth(canvas, options.showOriginalMargins) * canvasZoomFactor)) / 2;
 		}
 		
-		//copyElementTransforms(e);
+		copyElementTransforms(e, newLeft, newTop);
 		move(newLeft, newTop);
 		zoom(canvasZoomFactor);
+	}
+	
+	function setTransformOrigin(elm, left, top) {
+	    $(elm).css("-webkit-transform-origin",left+" "+top); 
+	    $(elm).css("-moz-transform-origin",left+" "+top);
+	    $(elm).css("-o-transform-origin",left+" "+top);
+	    $(elm).css("-ms-transform-origin",left+" "+top);
+	    $(elm).css("transform-origin",left+" "+top);
 	}
 	
 	function resetTransformations() {
@@ -149,12 +153,33 @@ function Presenteer(canvas, elements, options) {
 		$(canvas).get(0).style.OTransform += 'translate('+left+','+top+')';
 	}
 	
-	function copyElementTransforms(elm) {
+	// TODO: get element transform-origin. Make presenteer translates and scales work with that (or any) transform-origin. Then extra-apply element-transforms.
+	function copyElementTransforms(elm, elementTransformOriginLeft, elementTransformOriginTop) {
 		// Copy the transforms of the elm (for now only rotate) to the canvas
-		if ($(elm).css("-moz-transform") != "none") {
-			$(canvas).css("-moz-transform", $(elm).css("-moz-transform"));		
+		if (getStyle($(elm).get(0),"-moz-transform") != "none") {
+			$(canvas).css("-moz-transform", getStyle($(elm).get(0),"-moz-transform"));		
+		}
+		if (getStyle($(elm).get(0),"-webkit-transform") != "none") {
+		    setTransformOrigin($(canvas).find(".presentationextratransforms"),elementTransformOriginLeft,elementTransformOriginTop);
+			$(canvas).find(".presentationextratransforms").css("-webkit-transform", getStyle($(elm).get(0),"-webkit-transform"));	
+		} else {
+    		$(canvas).find(".presentationextratransforms").css("-webkit-transform","");
 		}
 	}
+    
+    function getStyle(el, styleProp) {
+        if (el.currentStyle) {
+            // look for IE
+            return(el.currentStyle[styleProp]);
+        } else if (window.getComputedStyle) {
+            // all other browsers
+            return(document.defaultView.getComputedStyle(el,null).getPropertyValue(styleProp));
+        } else {
+            // fall back to inline style
+            return(el.style[styleProp]);
+        }
+    }
+
 	
 	/*
 	* Helper functions to calculate the outerScrollHeight/Width of elements
