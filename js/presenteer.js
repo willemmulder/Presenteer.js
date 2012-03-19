@@ -8,11 +8,7 @@ function Presenteer(canvas, elements, options) {
 		return false;
 	}
 	// Set transform-origin to top-left
-	canvas.css("-webkit-transform-origin","0px 0px"); 
-	canvas.css("-moz-transform-origin","0px 0px");
-	canvas.css("-o-transform-origin","0px 0px");
-	canvas.css("-ms-transform-origin","0px 0px");
-	canvas.css("transform-origin","0px 0px");
+	setTransformOrigin(canvas, 0, 0);
 	var canvasZoomFactor = 1;
 	var originalElements = elements;
 	var elements = []; // Array of elements to show, in order
@@ -126,9 +122,75 @@ function Presenteer(canvas, elements, options) {
 			newLeft = (viewportWidth - (outerScrollWidth(canvas, options.showOriginalMargins) * canvasZoomFactor)) / 2;
 		}
 		
-		//copyElementTransforms(e);
+		copyElementTransforms(e, newLeft, newTop);
 		move(newLeft, newTop);
 		zoom(canvasZoomFactor);
+	}
+	
+		/*
+	* Main function to show an element
+	*/
+	function show2(elm) {
+		var e = $(elm.element);
+		resetTransformations();
+		// Calculate base-position (i.e. with zoomFactor 1).
+		// Webkit&Opera differ from Firefox. 
+		// Webkit&Opera return e.offset() *after* applying the zoom on the element (i.e. larger offset when larger zoomFactor)
+		// Firefox always returns the same original e.offset(), regardless of the zoomFactor
+		if ($.browser.webkit || $.browser.opera) {
+			var baseLeft = ((e.offset().left  - canvas.offset().left) / canvasZoomFactor);
+			var baseTop = ((e.offset().top  - canvas.offset().top) / canvasZoomFactor);
+		} else {
+			var baseLeft = e.offset().left  - canvas.offset().left;
+			var baseTop = e.offset().top  - canvas.offset().top;
+		}
+		// If we need to take into account the margins, subtract the margin from the left and top
+		
+		// Zoom so that the element fits best on screen
+		var canvasWidth = canvas.outerWidth(options.showOriginalMargins);
+		var canvasHeight = canvas.outerHeight(options.showOriginalMargins);
+		var viewportWidth = canvas.parent().outerWidth();
+		var viewportHeight = canvas.parent().outerHeight();
+		var proportionalWidth = e.outerWidth(options.showOriginalMargins) / viewportWidth; // e.g. 200/1000 = 0.2
+		var proportionalHeight = e.outerHeight(options.showOriginalMargins) / viewportHeight;
+		var scaleFactor = Math.max(proportionalWidth, proportionalHeight);
+		canvasZoomFactor = (1 / scaleFactor); // e.g. zoom to (1 / (0.2)) = 5
+		// Move element. Always move the element to the center of the screen
+		var newLeft = (baseLeft * -1);
+		var newTop = (baseTop * -1);
+		if (proportionalWidth > proportionalHeight) {
+			// Element will take full Width, leaving space at top and bottom
+			if (options.centerVertically) {
+				var openSpace = viewportHeight - (e.outerHeight(options.showOriginalMargins)*canvasZoomFactor);
+				newTop += (openSpace / 2);
+			}
+		} else {
+			// Element will take full Height, leaving space left and right
+			if (options.centerHorizontally) {
+				var openSpace = viewportWidth - (e.outerWidth(options.showOriginalMargins)*canvasZoomFactor);
+				newLeft += (openSpace / 2);
+			}
+		}
+		// If canvas is smaller than its container, then center the canvas in its parent
+		if (options.centerVertically && (outerScrollHeight(canvas, options.showOriginalMargins) * canvasZoomFactor) < viewportHeight) {
+			newTop = (viewportHeight - (outerScrollHeight(canvas, options.showOriginalMargins) * canvasZoomFactor)) / 2;
+		}
+		if (options.centerHorizontally && (outerScrollWidth(canvas, options.showOriginalMargins) * canvasZoomFactor)  < viewportWidth) {
+			newLeft = (viewportWidth - (outerScrollWidth(canvas, options.showOriginalMargins) * canvasZoomFactor)) / 2;
+		}
+		
+		//copyElementTransforms(e);
+		setTransformOrigin(canvas, -1 * (baseLeft + (e.outerWidth(options.showOriginalMargins) / 2)), -1 * (baseTop + (e.outerHeight(options.showOriginalMargins) / 2)) );
+		move(newLeft,newTop);
+		zoom(canvasZoomFactor);
+	}
+	
+	function setTransformOrigin(elm, left, top) {
+	    $(elm).css("-webkit-transform-origin",left+" "+top); 
+	    $(elm).css("-moz-transform-origin",left+" "+top);
+	    $(elm).css("-o-transform-origin",left+" "+top);
+	    $(elm).css("-ms-transform-origin",left+" "+top);
+	    $(elm).css("transform-origin",left+" "+top);
 	}
 	
 	function resetTransformations() {
@@ -149,12 +211,33 @@ function Presenteer(canvas, elements, options) {
 		$(canvas).get(0).style.OTransform += 'translate('+left+','+top+')';
 	}
 	
-	function copyElementTransforms(elm) {
+	// TODO: get element transform-origin. Make presenteer translates and scales work with that (or any) transform-origin. Then extra-apply element-transforms.
+	function copyElementTransforms(elm, elementTransformOriginLeft, elementTransformOriginTop) {
 		// Copy the transforms of the elm (for now only rotate) to the canvas
-		if ($(elm).css("-moz-transform") != "none") {
-			$(canvas).css("-moz-transform", $(elm).css("-moz-transform"));		
+		if (getStyle($(elm).get(0),"-moz-transform") != "none") {
+			$(canvas).css("-moz-transform", getStyle($(elm).get(0),"-moz-transform"));		
+		}
+		if (getStyle($(elm).get(0),"-webkit-transform") != "none") {
+		    setTransformOrigin($(canvas).find(".presentationextratransforms"),elementTransformOriginLeft,elementTransformOriginTop);
+			$(canvas).find(".presentationextratransforms").css("-webkit-transform", getStyle($(elm).get(0),"-webkit-transform"));	
+		} else {
+    		$(canvas).find(".presentationextratransforms").css("-webkit-transform","");
 		}
 	}
+    
+    function getStyle(el, styleProp) {
+        if (el.currentStyle) {
+            // look for IE
+            return(el.currentStyle[styleProp]);
+        } else if (window.getComputedStyle) {
+            // all other browsers
+            return(document.defaultView.getComputedStyle(el,null).getPropertyValue(styleProp));
+        } else {
+            // fall back to inline style
+            return(el.style[styleProp]);
+        }
+    }
+
 	
 	/*
 	* Helper functions to calculate the outerScrollHeight/Width of elements
@@ -274,7 +357,7 @@ function Presenteer(canvas, elements, options) {
 			if (typeof(elements[currentIndex].onBeforeEnter) == "function") {
 				elements[currentIndex].onBeforeEnter();
 			}
-			show(elements[currentIndex]);
+			show2(elements[currentIndex]);
 			if (typeof(elements[currentIndex].onAfterEnter) == "function") {
 				elements[currentIndex].onAfterEnter();
 			}
