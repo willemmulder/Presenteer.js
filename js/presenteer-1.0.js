@@ -35,7 +35,8 @@ function Presenteer(canvas, elements, options) {
 		showCustomMargin : false, 
 		customMarginWidth : 20,
 		centerHorizontally : true,
-		centerVertically : true
+		centerVertically : true,
+		followElementTransforms: true
 	};
 	if (typeof(options) != "object") {
 		options = {};
@@ -183,7 +184,8 @@ function Presenteer(canvas, elements, options) {
 			setTransitions(e, transitionsElmBackup);
 			// Set canvas transformations to correct values
 			setTransformOrigin(canvas, transformOriginLeft, transformOriginTop);
-			var transform =  ' translate('+newLeft+'px,'+newTop+'px)  scale('+canvasZoomFactor+') ' + processElementTransforms(e);
+			var inverseMatrix = (options.followElementTransforms ? processElementTransforms(e) : "");
+			var transform =  ' translate('+newLeft+'px,'+newTop+'px)  scale('+canvasZoomFactor+') ' + inverseMatrix;
 			setTransformation(canvas,transform);
 		}, 1);
 	}
@@ -289,6 +291,8 @@ function Presenteer(canvas, elements, options) {
 			var matrix = $(elm).css("-moz-transform");
 		} else if ($(elm).css("-webkit-transform") != "none" && $(elm).css("-webkit-transform") != null) {
 			var matrix = $(elm).css("-webkit-transform");
+		}  else if ($(elm).css("-o-transform") != "none" && $(elm).css("-o-transform") != null) {
+			var matrix = $(elm).css("-o-transform");
 		}
 		if (matrix != null && matrix != "") {
 			// Calculate the inverse
