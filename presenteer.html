@@ -3,24 +3,15 @@
 	<title>Presenteer.js</title>
 	<style>
 		body { font: 14px arial, verdana; margin: 0px; padding: 0px; color: #000066; }
-		code { font-family: monospace; background: #ddd; padding: 2px; }
+		.inline { display: inline; margin: 0px; }
 	
-		.container { width: 800px; margin: 0px auto; }
+		.container { width: 800px; margin: 20px auto; }
 	
 		.presentationcontainer { overflow: hidden; background: #eee; }
 		.presentation { cursor: pointer; }
 		.presentation > div { float: left; clear: both; padding: 20px; }
 		
 		#presentationcontainer1 { height: 100px; }
-		
-		#presentationcontainer2 { height: 300px; }
-		#presentation2 { width: 100000px; }
-		#presentation2 > div { padding: 1.5em; }
-		#floor5 { font-size: 1000px; }
-		#floor4 { font-size: 500px; }
-		#floor3 { font-size: 100px; }
-		#floor2 { font-size: 50px; }
-		#floor1 { font-size: 10px; -moz-transform: rotate(90deg); -webkit-transform: rotate(90deg); }
 		
 		/* specify smooth animations between states */
 		* { 
@@ -32,47 +23,104 @@
 	    }
 	</style>
 	<script src="js/jquery-1.7.1.min.js"></script>
+	<script src="js/sylvester/sylvester.js"></script>
+	<script src="js/sylvester/matrix.js"></script>
+	<script src="js/sylvester/vector.js"></script>
 	<script src="js/presenteer.js"></script>
+	
+	<script type="text/javascript" src="syntaxhighlighter/scripts/shCore.js"></script>
+	<script type="text/javascript" src="syntaxhighlighter/scripts/shBrushJScript.js"></script>
+	<link type="text/css" rel="stylesheet" href="syntaxhighlighter/styles/shCoreDefault.css"/>
+	<script type="text/javascript">
+		SyntaxHighlighter.defaults.toolbar = false;
+		SyntaxHighlighter.all();
+	</script>
 </head>
 <body>
 	<div class="container">
 		<h1>Presenteer.js</h1>
 		<script>
 			$(window).load(function() {
-				var presentation1 = new Presenteer("#presentation1", $("#presentation1 > div"), { centerHorizontally : false, centerVertically: true });
+				var presentation1 = new Presenteer("#presentation1", $("#presentation1 > div"), { centerHorizontally : true, centerVertically: true });
 				$("#presentationcontainer1").on("click", function() { presentation1.next(); });
 				presentation1.start();
 			});
 		</script>
 		<div class="presentationcontainer" id="presentationcontainer1">
 			<div class="presentation" id="presentation1">
-				<div>Welcome to <code>Presenteer.js</code>. Click in this box to continue.</div>
+				<div>Welcome to <code class="inline">Presenteer.js</code>. Click in this box to continue.</div>
 				<div>Presenteer.js a very flexible HTML5 presentation tool. <br />Yet, it needs very little configuration</div>
 				<div>In fact, it can be used with one simple line of code</div>
-				<div>For example the code for this slideshow is <br /><code>var presentation = new Presenteer("#presentation1", $("#presentation1 > div"));</code></div>
-				<div>We can navigate by calling <code>presentation.next();</code> or <code>presentation.prev();</code></div>
-				<div>There's also several constructor-options and custom callBack functions.<br />Read on for more!</div>
+				<div>For example the code for this slideshow is <br /><pre class="brush: js;">var presentation = new Presenteer("#presentation1", $("#presentation1 > div"));</pre></div>
+				<div>We can navigate by calling <code class="inline">presentation.next();</code> or <code class="inline">presentation.prev();</code></div>
+				<div style="-webkit-transform: rotate(8deg); -moz-transform: rotate(8deg); -o-transform: rotate(8deg);">The nicest thing is that Presenteer follows element-transforms like on this element!</div>
+				<div>There's also several constructor-options and custom callback functions.<br />Read on for more!</div>
 			</div>
 		</div>
-		<p>Okay, nice, but pretty simple. We can do at least what Prezi can, right? Yes we can. Keep clicking below.</p>
-		<script>
-			$(window).load(function() {
-				var elements = [ {element: "#floor5", onBeforeEnter : function(){$("#presentation2").fadeIn()}}, "#floor3", "#floor4", "#floor1" ];
-				var presentation2 = new Presenteer("#presentation2", elements, { centerHorizontally : false, centerVertically: true });
-				$("#presentationcontainer2").on("click", function() { presentation2.next(); });
-				presentation2.start();
-			});
-		</script>
-		<div class="presentationcontainer" id="presentationcontainer2">
-			<div class="presentation" id="presentation2">
-			    <div class="presentationextratransforms">
-				    <div id="floor5">5. We are currently at the top floor</div>
-				    <div id="floor4">4. Fourth floor</div>
-				    <div id="floor3">3. Whew, two floors down from floor 5</div>
-				    <div id="floor2">2. Second floor here</div>
-				    <div id="floor1">1. So the bottom floor has been rotated. Fun.</div>
-			    </div>
-			</div>
+		<div>
+			<h2>Introduction</h2>
+				<p>Presenteer.js a very flexible HTML5 presentation tool that works in one line of code, but is configurable with constructor options and many callbacks.</p>
+				<p>
+					In its simplest form, it works like <pre class="brush:js">var presentation = new Presenteer("#presentation", $("#presentation > div"));</pre>
+				</p>
+				<p>
+					And then navigate through the presentation with <code class="inline">presentation.start();</code>, <code class="inline">presentation.next();</code>, <code class="inline">presentation.prev();</code> and <code class="inline">presentation.show(0-based-index);</code>
+				</p>
+			<h2>Constructor options</h2>
+				<p><pre class="brush: js;">var presentation = new Presenteer(canvas, elements, options);</pre></p>
+				<p>Where <code class="inline">elements</code> is a list of objects that are any of the following</p>
+				<ol>
+					<li>CSS selector, like "#elm"</li>
+					<li>jQuery element, like $("#elm")</li>
+					<li>A Presenteer Object, that looks like 
+						<pre class="brush: js;">{
+	element : e, // CSS selector or jQuery object,
+
+	// Direction-independent callbacks
+	onBeforeEnter : function(), // Callback right before e is shown 
+	onAfterEnter : function(), // Callback right after e is shown 
+	onAfterLeave : function(), // Callback right before presentation moves from e to another element
+	onBeforeLeave : function(), // Callback right after presentation moves from e to another element
+
+	// Forward-navigating callbacks
+	onBeforeLeaveToNext : function(), // Callback right before presentation moves from e to the next element
+	onAfterLeaveToNext : function(), //	Callback right after presentation moves from e to the next element					
+	onBeforeEnterFromPrev : function(), // Callback right before presentation moves from the previous element to e
+	onAfterEnterFromPrev : function(), // Callback right after presentation moves from the previous element to e
+
+	// Backward-navigating callbacks
+	onBeforeLeaveToPrev : function(), // Callback right before presentation moves from e to the previous element
+	onAfterLeaveToPrev : function(), // Callback right after presentation moves from e to the previous element 
+	onBeforeEnterFromNext : function(), // Callback right before presentation moves from the next element to e
+	onAfterEnterFromNext : function(), // Callback right after presentation moves from the next element to e
+}</pre>
+					</li>
+				</ol>
+				<p>And <code  class="inline">options</code> is an object with the following defaults</p>
+				<pre class="brush: js;">{
+	showOriginalMargins : false, // When showing an element, also show its margins
+	centerHorizontally : true, // When showing an element, center it horizontally
+	centerVertically : true // When showing an element, center it vertically
+}</pre>
+			<h2>Navigation</h2>
+			<p>Once we have created a presentation with <pre class="brush: js;">var presentation = new Presenteer("#p", $("#p > div"));</pre> we can call the following commands to navigate through the presentation</p>
+			<p>
+				Go to the first element by doing <code class="inline">presentation.start();</code>
+			</p>
+			<p>
+				To go forward, call <code class="inline">presentation.next();</code>. If the end of the presentation is reached, the first element will be shown again.
+			</p>
+			<p>
+				To go back, call <code class="inline">presentation.prev();</code> or <code class="inline">presentation.previous();</code>. If the start of the presentation is reached, the last element will be shown again.
+			</p>
+			<p>
+				To go to an arbitrary element, call <code class="inline">presentation.show(index);</code> where index is 0-based.
+			</p>
+			<p>
+			<h2>Examples</h2>
+			<p>
+				<pre class="brush: js;">var presentation = new Presenteer("#presentation", $("#presentation > div"));</pre>
+			</p>
 		</div>
 	</div>
 </body>
