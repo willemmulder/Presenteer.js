@@ -26,7 +26,7 @@
 	<script src="js/sylvester/sylvester.js"></script>
 	<script src="js/sylvester/matrix.js"></script>
 	<script src="js/sylvester/vector.js"></script>
-	<script src="js/presenteer.js"></script>
+	<script src="js/presenteer-1.0.min.js"></script>
 	
 	<script type="text/javascript" src="syntaxhighlighter/scripts/shCore.js"></script>
 	<script type="text/javascript" src="syntaxhighlighter/scripts/shBrushJScript.js"></script>
@@ -39,9 +39,12 @@
 <body>
 	<div class="container">
 		<h1>Presenteer.js</h1>
+		<p>
+			Source code at <a href="https://github.com/willemmulder/Presenteer.js">https://github.com/willemmulder/Presenteer.js</a>
+		</p>
 		<script>
 			$(window).load(function() {
-				var presentation1 = new Presenteer("#presentation1", $("#presentation1 > div"), { centerHorizontally : true, centerVertically: true });
+				var presentation1 = new Presenteer("#presentation1", $("#presentation1 > div"), { centerHorizontally : false, centerVertically: true, followElementTransforms: true });
 				$("#presentationcontainer1").on("click", function() { presentation1.next(); });
 				presentation1.start();
 			});
@@ -53,7 +56,7 @@
 				<div>In fact, it can be used with one simple line of code</div>
 				<div>For example the code for this slideshow is <br /><pre class="brush: js;">var presentation = new Presenteer("#presentation1", $("#presentation1 > div"));</pre></div>
 				<div>We can navigate by calling <code class="inline">presentation.next();</code> or <code class="inline">presentation.prev();</code></div>
-				<div style="-webkit-transform: rotate(8deg); -moz-transform: rotate(8deg); -o-transform: rotate(8deg);">The nicest thing is that Presenteer follows element-transforms like on this element!</div>
+				<div style="-webkit-transform: rotate(8deg); -moz-transform: rotate(8deg); -o-transform: rotate(8deg);">The nice thing is that Presenteer follows element-transforms like on this element!</div>
 				<div>There's also several constructor-options and custom callback functions.<br />Read on for more!</div>
 			</div>
 		</div>
@@ -100,10 +103,11 @@
 				<pre class="brush: js;">{
 	showOriginalMargins : false, // When showing an element, also show its margins
 	centerHorizontally : true, // When showing an element, center it horizontally
-	centerVertically : true // When showing an element, center it vertically
+	centerVertically : true, // When showing an element, center it vertically
+	followElementTransforms: true // Follow element transforms like rotation. If true, requires the Sylvester matrix libraries.
 }</pre>
 			<h2>Navigation</h2>
-			<p>Once we have created a presentation with <pre class="brush: js;">var presentation = new Presenteer("#p", $("#p > div"));</pre> we can call the following commands to navigate through the presentation</p>
+			<p>Once we have created a presentation with <pre class="brush: js;">var presentation = new Presenteer("#presentation", $("#presentation > div"));</pre> we can call the following commands to navigate through the presentation</p>
 			<p>
 				Go to the first element by doing <code class="inline">presentation.start();</code>
 			</p>
@@ -117,6 +121,30 @@
 				To go to an arbitrary element, call <code class="inline">presentation.show(index);</code> where index is 0-based.
 			</p>
 			<p>
+			<h2>Installation</h2>
+			<p>Include jQuery, Presenteer.js and Sylvester in your page.</p>
+			<pre class="brush: js;">
+				&ltscript src="js/jquery-1.7.1.min.js"></script>
+				&ltscript src="js/presenteer-1.0.min.js"></script>
+			</pre>
+			<p>Then, on page load, create Presenteer instances for all the presentations you want to show on the page : </p>
+<pre class="brush: js;">var presentation = new Presenteer(
+	"#presentation", 
+	$("#presentation > div"), 
+	{ followElementTransforms: false }
+);</pre>
+			<p>I set followElementTransforms to false to not follow element transforms. Consequently, we don't need the Sylvester matrix libraries. If you want Presenteer.js to follow element transforms (e.g. element rotations), also add the Sylvester libraries to your page</p>
+			<pre class="brush:js">
+				&ltscript src="js/sylvester/sylvester.js"></script>
+				&ltscript src="js/sylvester/matrix.js"></script>
+				&ltscript src="js/sylvester/vector.js"></script>
+			</pre>
+			<p>And set <code>followElementTransforms: true</code>. This is also the default</p>
+<pre class="brush: js;">var presentation = new Presenteer(
+	"#presentation", 
+	$("#presentation > div"), 
+	{ followElementTransforms: true }
+);</pre>
 			<h2>Examples</h2>
 			<p>
 				<pre class="brush: js;">var presentation = new Presenteer("#presentation", $("#presentation > div"));</pre>
