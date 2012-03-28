@@ -1,4 +1,10 @@
-// Presenteer class
+/**
+* Presenteer class
+* @author Willem Mulder
+*
+* Note: don't use element-rotates of 90 or 270 degrees in combination with element-translates. 
+* A bug in the Sylvester matrix libs will set the horizontal translation to 0 when you do this
+*/
 function Presenteer(canvas, elements, options) {
 	/*
 	* Initialize
@@ -32,11 +38,16 @@ function Presenteer(canvas, elements, options) {
 	// Loop over given options and set a default if an option is not specified
 	var optionDefaults = { 
 		showOriginalMargins : false, 
-		showCustomMargin : false, 
-		customMarginWidth : 20,
+		//showCustomMargin : false, 
+		//customMarginWidth : 20,
 		centerHorizontally : true,
 		centerVertically : true,
-		followElementTransforms: true
+		followElementTransforms: true,
+		// Callbacks
+		onBeforeEnter : function(elm) {},
+		onAfterEnter : function(elm) {},
+		onBeforeLeave : function(elm) {},
+		onAfterLeave : function(elm) {}
 	};
 	if (typeof(options) != "object") {
 		options = {};
@@ -50,65 +61,9 @@ function Presenteer(canvas, elements, options) {
 	
 	/*
 	* Main function to show an element
-	* First version: does not take into account element transforms
-	*/
-	function show(elm) {
-		var e = $(elm.element);
-		resetTransformations();
-		// Calculate base-position (i.e. with zoomFactor 1).
-		// Webkit&Opera differ from Firefox. 
-		// Webkit&Opera return e.offset() *after* applying the zoom on the element (i.e. larger offset when larger zoomFactor)
-		// Firefox always returns the same original e.offset(), regardless of the zoomFactor
-		if ($.browser.webkit || $.browser.opera) {
-			var baseLeft = ((e.offset().left  - canvas.offset().left) / canvasZoomFactor);
-			var baseTop = ((e.offset().top  - canvas.offset().top) / canvasZoomFactor);
-		} else {
-			var baseLeft = e.offset().left  - canvas.offset().left;
-			var baseTop = e.offset().top  - canvas.offset().top;
-		}
-		// Zoom so that the element fits best on screen
-		var canvasWidth = canvas.outerWidth(options.showOriginalMargins);
-		var canvasHeight = canvas.outerHeight(options.showOriginalMargins);
-		var viewportWidth = canvas.parent().outerWidth();
-		var viewportHeight = canvas.parent().outerHeight();
-		var proportionalWidth = e.outerWidth(options.showOriginalMargins) / viewportWidth; // e.g. 200/1000 = 0.2
-		var proportionalHeight = e.outerHeight(options.showOriginalMargins) / viewportHeight;
-		var scaleFactor = Math.max(proportionalWidth, proportionalHeight);
-		canvasZoomFactor = (1 / scaleFactor); // e.g. zoom to (1 / (0.2)) = 5
-		// Move element. Always move the element to the center of the screen
-		var newLeft = (baseLeft * canvasZoomFactor * -1);
-		var newTop = (baseTop * canvasZoomFactor * -1);
-		if (proportionalWidth > proportionalHeight) {
-			// Element will take full Width, leaving space at top and bottom
-			if (options.centerVertically) {
-				var openSpace = viewportHeight - (e.outerHeight(options.showOriginalMargins)*canvasZoomFactor);
-				newTop += (openSpace / 2);
-			}
-		} else {
-			// Element will take full Height, leaving space left and right
-			if (options.centerHorizontally) {
-				var openSpace = viewportWidth - (e.outerWidth(options.showOriginalMargins)*canvasZoomFactor);
-				newLeft += (openSpace / 2);
-			}
-		}
-		// If canvas is smaller than its container, then center the canvas in its parent
-		if (options.centerVertically && (outerScrollHeight(canvas, options.showOriginalMargins) * canvasZoomFactor) < viewportHeight) {
-			newTop = (viewportHeight - (outerScrollHeight(canvas, options.showOriginalMargins) * canvasZoomFactor)) / 2;
-		}
-		if (options.centerHorizontally && (outerScrollWidth(canvas, options.showOriginalMargins) * canvasZoomFactor)  < viewportWidth) {
-			newLeft = (viewportWidth - (outerScrollWidth(canvas, options.showOriginalMargins) * canvasZoomFactor)) / 2;
-		}
-		
-		copyElementTransforms(e, newLeft, newTop);
-		move(newLeft, newTop);
-		zoom(canvasZoomFactor);
-	}
-	
-	/*
-	* Main function to show an element
 	* Second version: takes into account element transforms
 	*/
-	function show2(elm) {
+	function show(elm) {
 		var e = $(elm.element);
 		
 		// Temporarily disable transitions while we change things around
@@ -193,7 +148,7 @@ function Presenteer(canvas, elements, options) {
 	/*
 	* Main function to show an element
 	*/
-	function show3(elm) {
+	function show2(elm) {
 		var e = $(elm.element);
 		
 		// Temporarily disable transitions while we change things around
@@ -212,8 +167,8 @@ function Presenteer(canvas, elements, options) {
 		
 		var baseLeft = e.offset().left  - canvas.offset().left;
 		var baseTop = e.offset().top  - canvas.offset().top;
-		console.log("left " + baseLeft);
-		console.log("top " + baseTop);
+		//console.log("left " + baseLeft);
+		//console.log("top " + baseTop);
 
 		// Calculate new transform Origin
 		var transformOriginLeft = (baseLeft * 1 + (e.outerWidth() / 2)) + "px";
@@ -230,6 +185,7 @@ function Presenteer(canvas, elements, options) {
 		// Set canvas transformations to correct values
 		setTransformOrigin(canvas, transformOriginLeft, transformOriginTop);
 		var inverseM = processElementTransforms(e);
+		console.log(inverseM);
 		var transform = " translate(" + (baseLeft*-1) + "px," + (baseTop*-1) + "px) " + inverseM;
 		setTransformation(canvas,transform);
 	}
@@ -299,6 +255,7 @@ function Presenteer(canvas, elements, options) {
 			// Or work with the raw elements via matrix.substr(7, matrix.length - 8).split(', ');
 			var sylvesterMatrixString = matrix.replace(/matrix\((.+)\, (.+)\, (.+)\, (.+)\, (.+?)p?x?\, (.+?)p?x?\)/, "\$M([[$1,$3,$5],[$2,$4,$6],[0,0,1]])");
 			var sylvesterMatrix = eval(sylvesterMatrixString);
+			console.log(sylvesterMatrix.inspect());
 			var inverseMatrix = sylvesterMatrix.inverse();
 			// .e(row,column), 1-based
 			var inverseMatrixString = "";
@@ -308,6 +265,7 @@ function Presenteer(canvas, elements, options) {
 					+ Math.round(inverseMatrix.e(2,2)*100000000)/100000000 + ", " + Math.round(inverseMatrix.e(1,3)*100000000)/100000000 + ", " + Math.round(inverseMatrix.e(2,3)*100000000)/100000000 + ""
 				+ ")";
 			}
+			console.log(inverseMatrix.inspect());
 			// Return inverse
 			return inverseMatrixString;
 		}
@@ -366,11 +324,11 @@ function Presenteer(canvas, elements, options) {
 			this.showCurrent();
 		},
 		restart : function() {
-			var currentIndex = 0;
+			currentIndex = 0;
 			this.showCurrent();
 		},
 		show : function(index) {
-			var currentIndex = index;
+			currentIndex = index;
 			this.showCurrent();
 		},
 		next : function() {
@@ -388,6 +346,7 @@ function Presenteer(canvas, elements, options) {
 			if (typeof(elements[prevIndex].onBeforeLeave) == "function") {
 				elements[prevIndex].onBeforeLeave();
 			}
+			options.onBeforeLeave(elements[prevIndex]);
 			this.showCurrent();
 			if (elements[prevIndex] && typeof(elements[prevIndex].onAfterLeaveToNext) == "function") {
 				elements[prevIndex].onAfterLeaveToNext();
@@ -398,6 +357,7 @@ function Presenteer(canvas, elements, options) {
 			if (typeof(elements[prevIndex].onAfterLeave) == "function") {
 				elements[prevIndex].onAfterLeave();
 			}
+			options.onBeforeLeave(elements[prevIndex]);
 		},
 		prev : function() {
 			var prevIndex = currentIndex;
@@ -414,6 +374,7 @@ function Presenteer(canvas, elements, options) {
 			if (typeof(elements[prevIndex].onBeforeLeave) == "function") {
 				elements[prevIndex].onBeforeLeave();
 			}
+			options.onBeforeLeave(elements[prevIndex]);
 			this.showCurrent();
 			if (typeof(elements[prevIndex].onAfterLeaveToPrev) == "function") {
 				elements[prevIndex].onAfterLeaveToPrev();
@@ -424,6 +385,7 @@ function Presenteer(canvas, elements, options) {
 			if (typeof(elements[prevIndex].onAfterLeave) == "function") {
 				elements[prevIndex].onAfterLeave();
 			}
+			options.onAfterLeave(elements[prevIndex]);
 		},
 		previous : function() {
 			this.prev();
@@ -432,10 +394,12 @@ function Presenteer(canvas, elements, options) {
 			if (typeof(elements[currentIndex].onBeforeEnter) == "function") {
 				elements[currentIndex].onBeforeEnter();
 			}
-			show2(elements[currentIndex]);
+			options.onBeforeEnter(elements[currentIndex]);
+			show(elements[currentIndex]);
 			if (typeof(elements[currentIndex].onAfterEnter) == "function") {
 				elements[currentIndex].onAfterEnter();
 			}
+			options.onAfterEnter(elements[currentIndex]);
 		},
 		getCanvas : function() {
 			return $(canvas);

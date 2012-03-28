@@ -2,16 +2,22 @@
 <head>
 	<title>Presenteer.js</title>
 	<style>
-		body { font: 14px arial, verdana; margin: 0px; padding: 0px; color: #000066; }
+		body { font: 14px arial, verdana; margin: 0px; padding: 0px; color: #222233; }
 		.inline { display: inline; margin: 0px; }
 	
 		.container { width: 800px; margin: 20px auto; }
 	
-		.presentationcontainer { overflow: hidden; background: #eee; }
-		.presentation { cursor: pointer; }
+		.presentationcontainer { overflow: hidden; background: #ddddff; cursor: pointer; }
 		.presentation > div { float: left; clear: both; padding: 20px; }
 		
 		#presentationcontainer1 { height: 100px; }
+		
+		#presentationcontainer2 { height: 100px; width: 80%; float: left; }
+		#presentationcontainer2_counter { height: 100px; width: 20%; float: right; background: #bbbbdd; }
+		
+		.clearfix { visibility: hidden; font-size: 1px; clear:both; }
+		
+		.syntaxhighlighter.js { overflow-y: hidden !important; }
 		
 		/* specify smooth animations between states */
 		* { 
@@ -26,7 +32,7 @@
 	<script src="js/sylvester/sylvester.js"></script>
 	<script src="js/sylvester/matrix.js"></script>
 	<script src="js/sylvester/vector.js"></script>
-	<script src="js/presenteer-1.0.min.js"></script>
+	<script src="js/presenteer-1.0.js"></script>
 	
 	<script type="text/javascript" src="syntaxhighlighter/scripts/shCore.js"></script>
 	<script type="text/javascript" src="syntaxhighlighter/scripts/shBrushJScript.js"></script>
@@ -146,9 +152,58 @@
 	{ followElementTransforms: true }
 );</pre>
 			<h2>Examples</h2>
-			<p>
-				<pre class="brush: js;">var presentation = new Presenteer("#presentation", $("#presentation > div"));</pre>
-			</p>
+			<script>
+				$(window).load(function() {
+					var presentation2_counter = new Presenteer(
+						"#presentation2_counter", 
+						$("#presentation2_counter > div")
+					);
+				
+					var presentation2 = new Presenteer(
+						"#presentation2", 
+						$("#presentation2 > div"), 
+						{ onAfterEnter : function(elm) { setTimeout(function(){presentation2_counter.prev()},1); } }
+					);
+					
+					$("#presentationcontainer2_counter").on("click", function() { presentation2.next(); });
+					$("#presentationcontainer2").on("click", function() { presentation2.next(); });
+					presentation2_counter.start();
+					presentation2.start();
+				});
+			</script>
+			<div class="presentationcontainer" id="presentationcontainer2">
+				<div class="presentation" id="presentation2">
+					<div>Woo, that's a nice slide-counter at the right side! Click!</div>
+					<div id="r" style="-webkit-transform: translate(0px, 50px) rotate(90.01deg); -moz-transform: rotate(90deg); -o-transform: rotate(90deg);">90 degree ROTATION</div>
+					<div style="-webkit-transform: translate(0,100px)">And back! That's it for this demo. Click to restart.</div>
+				</div>
+			</div>
+			<div class="presentationcontainer" id="presentationcontainer2_counter">
+				<div class="presentation" id="presentation2_counter">
+					<div>3</div>
+					<div>2</div>
+					<div>1</div>
+				</div>
+			</div>
+			<div class="clearfix">.</div>
+			<p>Code is as simple as</p>
+			<pre class="brush: js;">
+			var presentation2_counter = new Presenteer(
+					"#presentation2_counter", 
+					$("#presentation2_counter > div")
+				);
+			
+				var presentation2 = new Presenteer(
+					"#presentation2", 
+					$("#presentation2 > div"), 
+					{ onAfterEnter : function(elm) { setTimeout(function(){presentation2_counter.prev()},1); } }
+				);
+				
+				$("#presentationcontainer2_counter").on("click", function() { presentation2.next(); });
+				$("#presentationcontainer2").on("click", function() { presentation2.next(); });
+				presentation2_counter.start();
+				presentation2.start();
+			</pre>
 		</div>
 	</div>
 </body>
