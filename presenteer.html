@@ -20,7 +20,7 @@
 		.syntaxhighlighter.js { overflow-y: hidden !important; }
 		
 		/* specify smooth animations between states */
-		* { 
+		.presentation { 
 		    -moz-transition: all 0.5s ease; 
 		    -webkit-transition: all 0.5s ease; 
 		    -o-transition: all 0.5s ease; 
@@ -62,7 +62,7 @@
 				<div>In fact, it can be used with one simple line of code</div>
 				<div>For example the code for this slideshow is <br /><pre class="brush: js;">var presentation = new Presenteer("#presentation1", $("#presentation1 > div"));</pre></div>
 				<div>We can navigate by calling <code class="inline">presentation.next();</code> or <code class="inline">presentation.prev();</code></div>
-				<div style="-webkit-transform: rotate(8deg); -moz-transform: rotate(8deg); -o-transform: rotate(8deg);">The nice thing is that Presenteer follows element-transforms like on this element!</div>
+				<div style="-webkit-transform: rotate(8deg); -moz-transform: rotate(8deg); -o-transform: rotate(8deg); -ms-transform: rotate(8deg); transform: rotate(8deg);">The nice thing is that Presenteer follows element-transforms like on this element!</div>
 				<div>There's also several constructor-options and custom callback functions.<br />Read on for more!</div>
 			</div>
 		</div>
@@ -174,8 +174,8 @@
 			<div class="presentationcontainer" id="presentationcontainer2">
 				<div class="presentation" id="presentation2">
 					<div>Woo, that's a nice slide-counter at the right side! Click!</div>
-					<div id="r" style="-webkit-transform: translate(0px, 50px) rotate(90.01deg); -moz-transform: rotate(90deg); -o-transform: rotate(90deg);">90 degree ROTATION</div>
-					<div style="-webkit-transform: translate(0,100px)">And back! That's it for this demo. Click to restart.</div>
+					<div id="r" style="-webkit-transform: translate(0px, 50px) rotate(90.01deg); -moz-transform: translate(0px, 50px) rotate(90.01deg); -o-transform: translate(0px, 50px) rotate(90.01deg);  -ms-transform: translate(0px, 50px) rotate(90.01deg); transform: translate(0px, 50px) rotate(90.01deg);">90 degree ROTATION</div>
+					<div style="-webkit-transform: translate(0,100px); -moz-transform: translate(0,100px); -o-transform: translate(0,100px); -ms-transform: translate(0,100px); transform: translate(0,100px);">And back! That's it for this demo. Click to restart.</div>
 				</div>
 			</div>
 			<div class="presentationcontainer" id="presentationcontainer2_counter">
