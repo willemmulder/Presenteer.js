@@ -1,7 +1,7 @@
 Presenteer.js
 ============
 
-Presenteer.js is a flexible HTML5 presntation tool that uses CSS3 transforms and transitions to make smooth HTML presentations.  
+Presenteer.js is a flexible HTML5 presentation tool that uses CSS3 transforms and transitions to make smooth HTML presentations.  
 See http://willemmulder.github.com/Presenteer.js/ for demos and documentation.
 
 License
