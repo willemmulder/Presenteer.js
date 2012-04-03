@@ -139,9 +139,9 @@ function Presenteer(canvas, elements, options) {
 			setTransitions(canvas, transitionsBackup);
 			setTransitions(e, transitionsElmBackup);
 			// Set canvas transformations to correct values
-			setTransformOrigin(canvas, transformOriginLeft, transformOriginTop);
 			var inverseMatrix = (options.followElementTransforms ? processElementTransforms(e) : "");
 			var transform =  ' translate('+newLeft+'px,'+newTop+'px)  scale('+canvasZoomFactor+') ' + inverseMatrix;
+			setTransformOrigin(canvas, transformOriginLeft, transformOriginTop);
 			setTransformation(canvas,transform);
 		}, 1);
 	}
