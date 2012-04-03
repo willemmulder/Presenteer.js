@@ -21,11 +21,11 @@
 		
 		/* specify smooth animations between states */
 		.presentation { 
-		    -moz-transition: all 0.5s ease; 
-		    -webkit-transition: all 0.5s ease; 
-		    -o-transition: all 0.5s ease; 
-		    -ms-transition: all 0.5s ease;
-		    transition: all 0.5s ease; 
+		    -moz-transition: all 0.7s ease; 
+		    -webkit-transition: all 0.7s ease; 
+		    -o-transition: all 0.7s ease; 
+		    -ms-transition: all 0.7s ease;
+		    transition: all 0.7s ease; 
 	    }
 	</style>
 	<script src="js/jquery-1.7.1.min.js"></script>
@@ -50,7 +50,18 @@
 		</p>
 		<script>
 			$(window).load(function() {
-				var presentation1 = new Presenteer("#presentation1", $("#presentation1 > div"), { centerHorizontally : false, centerVertically: true, followElementTransforms: true });
+				var presentation1 = new Presenteer("#presentation1", $("#presentation1 > div"), { 
+					centerHorizontally : false, 
+					centerVertically: true, 
+					followElementTransforms: true,
+					transition: {
+						"transition-delay" : "0s",
+						"transition-duration" : "0.5s",
+						"transition-property" : "all",
+						"transition-timing-function" : "ease"
+					},
+					useExistingTransitionIfAvailable: false
+				});
 				$("#presentationcontainer1").on("click", function() { presentation1.next(); });
 				presentation1.start();
 			});
@@ -110,7 +121,18 @@
 	showOriginalMargins : false, // When showing an element, also show its margins
 	centerHorizontally : true, // When showing an element, center it horizontally
 	centerVertically : true, // When showing an element, center it vertically
-	followElementTransforms: true // Follow element transforms like rotation. If true, requires the Sylvester matrix libraries.
+	followElementTransforms: true, // Follow element transforms like rotation. If true, requires the Sylvester matrix libraries.
+	transition: { // Use this as a transition for the presentation
+		"transition-delay" : "0s",
+		"transition-duration" : "0.5s",
+		"transition-property" : "all",
+		"transition-timing-function" : "ease"
+	},
+	useExistingTransitionIfAvailable: true, // Use the transitions as defined in the CSS. Will not work for Opera and IE
+	onBeforeEnter : function(elm) {}, // Global callback right before presentation moves to element elm
+	onAfterEnter : function(elm) {}, // Global callback right after presentation moves to element elm
+	onBeforeLeave : function(elm) {}, // Global callback right before presentation moves from element elm to another element
+	onAfterLeave : function(elm) {} // Global callback right after presentation moves from element elm to another element
 }</pre>
 			<h2>Navigation</h2>
 			<p>Once we have created a presentation with <pre class="brush: js;">var presentation = new Presenteer("#presentation", $("#presentation > div"));</pre> we can call the following commands to navigate through the presentation</p>

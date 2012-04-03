@@ -43,6 +43,13 @@ function Presenteer(canvas, elements, options) {
 		centerHorizontally : true,
 		centerVertically : true,
 		followElementTransforms: true,
+		transition: {
+			"transition-delay" : "0s",
+			"transition-duration" : "0.5s",
+			"transition-property" : "all",
+			"transition-timing-function" : "ease"
+		},
+		useExistingTransitionIfAvailable: true, // Will not work for Opera and IE
 		// Callbacks
 		onBeforeEnter : function(elm) {},
 		onAfterEnter : function(elm) {},
@@ -67,7 +74,7 @@ function Presenteer(canvas, elements, options) {
 		var e = $(elm.element);
 		
 		// Temporarily disable transitions while we change things around
-		// Opera cannot get transitions properties via Javascript, See http://my.opera.com/community/forums/topic.dml?id=1145422
+		// Opera and IE9 cannot get transitions properties via Javascript, See http://my.opera.com/community/forums/topic.dml?id=1145422
 		var transitionsBackup = getTransitions(canvas);
 		setTransitions(canvas,{});
 		var transitionsElmBackup = getTransitions(e);
@@ -136,12 +143,18 @@ function Presenteer(canvas, elements, options) {
 		// Do a setTimeOut to prevent Webkit from tripping up and starting all transitions from xy 0px,0px
 		setTimeout(function() {
 			// Enable transitions again
-			setTransitions(canvas, transitionsBackup);
+			// Set canvas-transition to either a) existing transition or b) transition as given in parameter
+			var canvasTransitionString = getTransitionString(transitionsBackup);
+			if (canvasTransitionString != "" && options.useExistingTransitionIfAvailable) {
+				setTransitions(canvas, transitionsBackup);
+			} else {
+				setTransitions(canvas, options.transition);
+			}
 			setTransitions(e, transitionsElmBackup);
 			// Set canvas transformations to correct values
-			setTransformOrigin(canvas, transformOriginLeft, transformOriginTop);
 			var inverseMatrix = (options.followElementTransforms ? processElementTransforms(e) : "");
 			var transform =  ' translate('+newLeft+'px,'+newTop+'px)  scale('+canvasZoomFactor+') ' + inverseMatrix;
+			setTransformOrigin(canvas, transformOriginLeft, transformOriginTop);
 			setTransformation(canvas,transform);
 		}, 1);
 	}
@@ -190,7 +203,7 @@ function Presenteer(canvas, elements, options) {
 		setTransformation(canvas,transform);
 	}
 	
-	var prefixes = { moz : "-moz-", webkit : "-webkit-", o : "-o-", ms : "-ms-", all : "" };
+	var prefixes = { moz : "Moz", webkit : "Webkit", o : "O", ms : "ms", all : "" };
 	
 	function getTransitions(e) {
 		var ret = {};
@@ -199,10 +212,10 @@ function Presenteer(canvas, elements, options) {
 		for(var prefixID in prefixes) {
 			var prefix = prefixes[prefixID];
 			var p = ret[prefixID] = {};
-			p["transition-delay"] = elm.css(prefix + "transition-delay");
-			p["transition-duration"] = elm.css(prefix + "transition-duration");
-			p["transition-property"] = elm.css(prefix + "transition-property");
-			p["transition-timing-function"] = elm.css(prefix + "transition-timing-function");
+			p["transition-delay"] = elm.css(prefix + "TransitionDelay");
+			p["transition-duration"] = elm.css(prefix + "TransitionDuration");
+			p["transition-property"] = elm.css(prefix + "TransitionProperty");
+			p["transition-timing-function"] = elm.css(prefix + "TransitionTimingFunction");
 		}
 		return ret;
 	}
@@ -212,17 +225,33 @@ function Presenteer(canvas, elements, options) {
 		for(var prefixID in prefixes) {
 			var prefix = prefixes[prefixID];
 			var transitionElms = transitions[prefixID] || {};
-			elm.css(prefix+"transition-delay", transitionElms["transition-delay"] || "0s");
-			elm.css(prefix+"transition-duration", transitionElms["transition-duration"] || "0s");
-			elm.css(prefix+"transition-property", transitionElms["transition-property"] || "none");
-			elm.css(prefix+"transition-timing-function", transitionElms["transition-timing-function"] || "");
+			elm.css(prefix+"TransitionDelay", transitionElms["transition-delay"] || transitions["transition-delay"] || "0s");
+			elm.css(prefix+"TransitionDuration", transitionElms["transition-duration"] || transitions["transition-duration"] || "0s");
+			elm.css(prefix+"TransitionProperty", transitionElms["transition-property"] || transitions["transition-property"] || "none");
+			elm.css(prefix+"TransitionTimingFunction", transitionElms["transition-timing-function"] || transitions["transition-timing-function"] || "");
 		}
+	}
+	
+	function getTransitionString(transitions) {
+		for (var prefixID in transitions) {
+			var p = transitions[prefixID];
+			var transitionIsInThisPrefix = false;
+			if (
+				(p["transition-delay"] != "" && p["transition-delay"] != "0" && p["transition-delay"] != null)
+				|| (p["transition-duration"] != "" && p["transition-duration"] != "0" && p["transition-duration"] != null)
+				|| (p["transition-property"] != "" && p["transition-property"] != "none" && p["transition-property"] != null)
+				|| (p["transition-timing-function"] != "" && p["transition-timing-function"] != "" && p["transition-timing-function"] != null)
+			){
+				return p["transition-property"] + " " + p["transition-duration"] + " " + p["transition-timing-function"];
+			}
+		}
+		return "";
 	}
 	
 	function setTransformOrigin(elm, left, top) {
 		for(var prefixID in prefixes) {
 			var prefix = prefixes[prefixID];
-			$(elm).css(prefix+"transform-origin",left+" "+top); 
+			$(elm).css(prefix+"TransformOrigin",left+" "+top); 
 		}
 	}
 	
@@ -233,7 +262,7 @@ function Presenteer(canvas, elements, options) {
 	function setTransformation(elm, transform) {
 		for(var prefixID in prefixes) {
 			var prefix = prefixes[prefixID];
-			$(elm).css(prefix+"transform", transform);
+			$(elm).css(prefix+"Transform", transform);
 		}
 	}
 	
@@ -250,8 +279,8 @@ function Presenteer(canvas, elements, options) {
 		var matrix = "";
 		for(var prefixID in prefixes) {
 			var prefix = prefixes[prefixID];
-			if ($(elm).css(prefix+"transform") != null && $(elm).css(prefix+"transform").indexOf("matrix") === 0) {
-				var matrix = $(elm).css(prefix+"transform");
+			if ($(elm).css(prefix+"Transform") != null && $(elm).css(prefix+"Transform").indexOf("matrix") === 0) {
+				var matrix = $(elm).css(prefix+"Transform");
 				break;
 			}
 		}
@@ -260,7 +289,6 @@ function Presenteer(canvas, elements, options) {
 			// Or work with the raw elements via matrix.substr(7, matrix.length - 8).split(', ');
 			var sylvesterMatrixString = matrix.replace(/matrix\((.+)\, (.+)\, (.+)\, (.+)\, (.+?)p?x?\, (.+?)p?x?\)/, "\$M([[$1,$3,$5],[$2,$4,$6],[0,0,1]])");
 			var sylvesterMatrix = eval(sylvesterMatrixString);
-			//console.log(sylvesterMatrix.inspect());
 			var inverseMatrix = sylvesterMatrix.inverse();
 			// .e(row,column), 1-based
 			var inverseMatrixString = "";
@@ -270,7 +298,6 @@ function Presenteer(canvas, elements, options) {
 					+ Math.round(inverseMatrix.e(2,2)*100000000)/100000000 + ", " + Math.round(inverseMatrix.e(1,3)*100000000)/100000000 + ", " + Math.round(inverseMatrix.e(2,3)*100000000)/100000000 + ""
 				+ ")";
 			}
-			//console.log(inverseMatrix.inspect());
 			// Return inverse
 			return inverseMatrixString;
 		}
