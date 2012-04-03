@@ -107,7 +107,7 @@ function Presenteer(canvas, elements, options) {
 		canvasZoomFactor = (1 / scaleFactor); // e.g. zoom to (1 / (0.2)) = 5
 		// Move element. At first, always move the element to top-left of the canvas
 		var newLeft = ((baseLeft - (e.outerWidth(options.showOriginalMargins) * (canvasZoomFactor-1) / 2)) * -1);
-		var newTop = ((baseTop - (e.outerHeight(options.showOriginalMargins) * (canvasZoomFactor-1) / 2)) * -1); console.log(newTop);
+		var newTop = ((baseTop - (e.outerHeight(options.showOriginalMargins) * (canvasZoomFactor-1) / 2)) * -1);
 		if (proportionalWidth > proportionalHeight) {
 			// Element will take full Width, leaving space at top and bottom
 			if (options.centerVertically) {
@@ -145,7 +145,6 @@ function Presenteer(canvas, elements, options) {
 			// Enable transitions again
 			// Set canvas-transition to either a) existing transition or b) transition as given in parameter
 			var canvasTransitionString = getTransitionString(transitionsBackup);
-			console.log(transitionsBackup);
 			if (canvasTransitionString != "" && options.useExistingTransitionIfAvailable) {
 				setTransitions(canvas, transitionsBackup);
 			} else {
@@ -238,10 +237,10 @@ function Presenteer(canvas, elements, options) {
 			var p = transitions[prefixID];
 			var transitionIsInThisPrefix = false;
 			if (
-				(p["transition-delay"] != "" && p["transition-delay"] != "0")
-				|| (p["transition-duration"] != "" && p["transition-duration"] != "0")
-				|| (p["transition-property"] != "" && p["transition-property"] != "none")
-				|| (p["transition-timing-function"] != "" && p["transition-timing-function"] != "")
+				(p["transition-delay"] != "" && p["transition-delay"] != "0" && p["transition-delay"] != null)
+				|| (p["transition-duration"] != "" && p["transition-duration"] != "0" && p["transition-duration"] != null)
+				|| (p["transition-property"] != "" && p["transition-property"] != "none" && p["transition-property"] != null)
+				|| (p["transition-timing-function"] != "" && p["transition-timing-function"] != "" && p["transition-timing-function"] != null)
 			){
 				return p["transition-property"] + " " + p["transition-duration"] + " " + p["transition-timing-function"];
 			}
@@ -290,7 +289,6 @@ function Presenteer(canvas, elements, options) {
 			// Or work with the raw elements via matrix.substr(7, matrix.length - 8).split(', ');
 			var sylvesterMatrixString = matrix.replace(/matrix\((.+)\, (.+)\, (.+)\, (.+)\, (.+?)p?x?\, (.+?)p?x?\)/, "\$M([[$1,$3,$5],[$2,$4,$6],[0,0,1]])");
 			var sylvesterMatrix = eval(sylvesterMatrixString);
-			//console.log(sylvesterMatrix.inspect());
 			var inverseMatrix = sylvesterMatrix.inverse();
 			// .e(row,column), 1-based
 			var inverseMatrixString = "";
@@ -300,7 +298,6 @@ function Presenteer(canvas, elements, options) {
 					+ Math.round(inverseMatrix.e(2,2)*100000000)/100000000 + ", " + Math.round(inverseMatrix.e(1,3)*100000000)/100000000 + ", " + Math.round(inverseMatrix.e(2,3)*100000000)/100000000 + ""
 				+ ")";
 			}
-			//console.log(inverseMatrix.inspect());
 			// Return inverse
 			return inverseMatrixString;
 		}
