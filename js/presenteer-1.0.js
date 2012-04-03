@@ -43,6 +43,13 @@ function Presenteer(canvas, elements, options) {
 		centerHorizontally : true,
 		centerVertically : true,
 		followElementTransforms: true,
+		transition: {
+			"transition-delay" : "0s",
+			"transition-duration" : "0.5s",
+			"transition-property" : "all",
+			"transition-timing-function" : "ease"
+		},
+		useExistingTransitionIfAvailable: true, // Will not work for Opera and IE
 		// Callbacks
 		onBeforeEnter : function(elm) {},
 		onAfterEnter : function(elm) {},
@@ -67,7 +74,7 @@ function Presenteer(canvas, elements, options) {
 		var e = $(elm.element);
 		
 		// Temporarily disable transitions while we change things around
-		// Opera cannot get transitions properties via Javascript, See http://my.opera.com/community/forums/topic.dml?id=1145422
+		// Opera and IE9 cannot get transitions properties via Javascript, See http://my.opera.com/community/forums/topic.dml?id=1145422
 		var transitionsBackup = getTransitions(canvas);
 		setTransitions(canvas,{});
 		var transitionsElmBackup = getTransitions(e);
@@ -100,7 +107,7 @@ function Presenteer(canvas, elements, options) {
 		canvasZoomFactor = (1 / scaleFactor); // e.g. zoom to (1 / (0.2)) = 5
 		// Move element. At first, always move the element to top-left of the canvas
 		var newLeft = ((baseLeft - (e.outerWidth(options.showOriginalMargins) * (canvasZoomFactor-1) / 2)) * -1);
-		var newTop = ((baseTop - (e.outerHeight(options.showOriginalMargins) * (canvasZoomFactor-1) / 2)) * -1);
+		var newTop = ((baseTop - (e.outerHeight(options.showOriginalMargins) * (canvasZoomFactor-1) / 2)) * -1); console.log(newTop);
 		if (proportionalWidth > proportionalHeight) {
 			// Element will take full Width, leaving space at top and bottom
 			if (options.centerVertically) {
@@ -136,7 +143,14 @@ function Presenteer(canvas, elements, options) {
 		// Do a setTimeOut to prevent Webkit from tripping up and starting all transitions from xy 0px,0px
 		setTimeout(function() {
 			// Enable transitions again
-			setTransitions(canvas, transitionsBackup);
+			// Set canvas-transition to either a) existing transition or b) transition as given in parameter
+			var canvasTransitionString = getTransitionString(transitionsBackup);
+			console.log(transitionsBackup);
+			if (canvasTransitionString != "" && options.useExistingTransitionIfAvailable) {
+				setTransitions(canvas, transitionsBackup);
+			} else {
+				setTransitions(canvas, options.transition);
+			}
 			setTransitions(e, transitionsElmBackup);
 			// Set canvas transformations to correct values
 			var inverseMatrix = (options.followElementTransforms ? processElementTransforms(e) : "");
@@ -190,7 +204,7 @@ function Presenteer(canvas, elements, options) {
 		setTransformation(canvas,transform);
 	}
 	
-	var prefixes = { moz : "-moz-", webkit : "-webkit-", o : "-o-", ms : "-ms-", all : "" };
+	var prefixes = { moz : "Moz", webkit : "Webkit", o : "O", ms : "ms", all : "" };
 	
 	function getTransitions(e) {
 		var ret = {};
@@ -199,10 +213,10 @@ function Presenteer(canvas, elements, options) {
 		for(var prefixID in prefixes) {
 			var prefix = prefixes[prefixID];
 			var p = ret[prefixID] = {};
-			p["transition-delay"] = elm.css(prefix + "transition-delay");
-			p["transition-duration"] = elm.css(prefix + "transition-duration");
-			p["transition-property"] = elm.css(prefix + "transition-property");
-			p["transition-timing-function"] = elm.css(prefix + "transition-timing-function");
+			p["transition-delay"] = elm.css(prefix + "TransitionDelay");
+			p["transition-duration"] = elm.css(prefix + "TransitionDuration");
+			p["transition-property"] = elm.css(prefix + "TransitionProperty");
+			p["transition-timing-function"] = elm.css(prefix + "TransitionTimingFunction");
 		}
 		return ret;
 	}
@@ -212,17 +226,33 @@ function Presenteer(canvas, elements, options) {
 		for(var prefixID in prefixes) {
 			var prefix = prefixes[prefixID];
 			var transitionElms = transitions[prefixID] || {};
-			elm.css(prefix+"transition-delay", transitionElms["transition-delay"] || "0s");
-			elm.css(prefix+"transition-duration", transitionElms["transition-duration"] || "0s");
-			elm.css(prefix+"transition-property", transitionElms["transition-property"] || "none");
-			elm.css(prefix+"transition-timing-function", transitionElms["transition-timing-function"] || "");
+			elm.css(prefix+"TransitionDelay", transitionElms["transition-delay"] || transitions["transition-delay"] || "0s");
+			elm.css(prefix+"TransitionDuration", transitionElms["transition-duration"] || transitions["transition-duration"] || "0s");
+			elm.css(prefix+"TransitionProperty", transitionElms["transition-property"] || transitions["transition-property"] || "none");
+			elm.css(prefix+"TransitionTimingFunction", transitionElms["transition-timing-function"] || transitions["transition-timing-function"] || "");
 		}
+	}
+	
+	function getTransitionString(transitions) {
+		for (var prefixID in transitions) {
+			var p = transitions[prefixID];
+			var transitionIsInThisPrefix = false;
+			if (
+				(p["transition-delay"] != "" && p["transition-delay"] != "0")
+				|| (p["transition-duration"] != "" && p["transition-duration"] != "0")
+				|| (p["transition-property"] != "" && p["transition-property"] != "none")
+				|| (p["transition-timing-function"] != "" && p["transition-timing-function"] != "")
+			){
+				return p["transition-property"] + " " + p["transition-duration"] + " " + p["transition-timing-function"];
+			}
+		}
+		return "";
 	}
 	
 	function setTransformOrigin(elm, left, top) {
 		for(var prefixID in prefixes) {
 			var prefix = prefixes[prefixID];
-			$(elm).css(prefix+"transform-origin",left+" "+top); 
+			$(elm).css(prefix+"TransformOrigin",left+" "+top); 
 		}
 	}
 	
@@ -233,7 +263,7 @@ function Presenteer(canvas, elements, options) {
 	function setTransformation(elm, transform) {
 		for(var prefixID in prefixes) {
 			var prefix = prefixes[prefixID];
-			$(elm).css(prefix+"transform", transform);
+			$(elm).css(prefix+"Transform", transform);
 		}
 	}
 	
@@ -250,8 +280,8 @@ function Presenteer(canvas, elements, options) {
 		var matrix = "";
 		for(var prefixID in prefixes) {
 			var prefix = prefixes[prefixID];
-			if ($(elm).css(prefix+"transform") != null && $(elm).css(prefix+"transform").indexOf("matrix") === 0) {
-				var matrix = $(elm).css(prefix+"transform");
+			if ($(elm).css(prefix+"Transform") != null && $(elm).css(prefix+"Transform").indexOf("matrix") === 0) {
+				var matrix = $(elm).css(prefix+"Transform");
 				break;
 			}
 		}
