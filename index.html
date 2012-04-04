@@ -2,18 +2,52 @@
 <head>
 	<title>Presenteer.js</title>
 	<style>
-		body { font: 14px arial, verdana; margin: 0px; padding: 0px; color: #222233; }
+		body { font: 14px arial, verdana; margin: 0px; padding: 0px; color: #222233; background: #cc1919; background: #fbfbfb; }
+		h1, h2, h3, h4 { color: #cc1919; }
+		* { 
+			-webkit-box-sizing: border-box;
+			-moz-box-sizing: border-box;
+			box-sizing: border-box;
+		}
+		
 		.inline { display: inline; margin: 0px; }
 	
-		.container { width: 800px; margin: 20px auto; }
+		.container { width: 800px; margin: 20px auto; background: #fff; padding: 20px; box-shadow: 0px 0px 5px #777; }
+		
+		.button {
+			padding: 2px;
+			border: 1px solid #b4b5c3;
+			background: rgb(222,222,235);
+			background-image: -webkit-gradient(linear, top, bottom, from(rgb(222,222,235)), to(rgb(190,190,204)));
+			background-image: -moz-linear-gradient(to bottom, rgb(222,222,235), rgb(190,190,204));
+			background-image: -o-linear-gradient(to bottom, rgb(222,222,235), rgb(190,190,204));
+			-webkit-border-radius:2px;
+			-moz-border-radius:2px;
+			-webkit-box-shadow: 0px 0px 2px rgba(100,100,100,0.2);
+			box-shadow: 0px 0px 2px rgba(100,100,100,0.2);
+			color: rgb(50,50,140);
+			text-decoration: none;
+		}
 	
-		.presentationcontainer { overflow: hidden; background: #ddddff; cursor: pointer; }
+		.presentationcontainer { 
+			overflow: hidden; 
+			background: #ddddff; 
+			cursor: pointer; 
+			-webkit-box-shadow: inset 0px 0px 5px rgba(100,100,100,0.2);
+			box-shadow: inset 0px 0px 5px rgba(100,100,100,0.2); 
+		}
 		.presentation > div { float: left; clear: both; padding: 20px; }
 		
 		#presentationcontainer1 { height: 100px; }
 		
 		#presentationcontainer2 { height: 100px; width: 80%; float: left; }
 		#presentationcontainer2_counter { height: 100px; width: 20%; float: right; background: #bbbbdd; }
+		
+		#presentationcontainer3 { height: 100px; }
+		#presentation3 { width: 400%; }
+		#presentation3 > div { width: 25%; float: left; clear: none; }
+		#presentationcontainer3_counter { height: 40px; }
+		#presentationcontainer3_counter div { clear: none; }
 		
 		.clearfix { visibility: hidden; font-size: 1px; clear:both; }
 		
@@ -26,6 +60,8 @@
 		    -o-transition: all 0.7s ease; 
 		    -ms-transition: all 0.7s ease;
 		    transition: all 0.7s ease; 
+			-webkit-perspective: hidden; /* suppress flicker */
+			-webkit-transform: translateZ(0); /* make animation GPU accelerated by applying -webkit-transform: translateZ(0); */
 	    }
 	</style>
 	<script src="js/jquery-1.7.1.min.js"></script>
@@ -44,7 +80,7 @@
 	<div class="container">
 		<h1>Presenteer.js</h1>
 		<p>
-			Source code at <a href="https://github.com/willemmulder/Presenteer.js">https://github.com/willemmulder/Presenteer.js</a>
+			Source code at <a class="button" href="https://github.com/willemmulder/Presenteer.js">https://github.com/willemmulder/Presenteer.js</a>
 		</p>
 		<script>
 			$(window).load(function() {
@@ -151,8 +187,7 @@
 			<p>Include jQuery and Presenteer.js (and possibly Sylvester.js, see below) in your page.</p>
 			<pre class="brush: js;">
 				&ltscript src="js/jquery-1.7.1.min.js"></script>
-				&ltscript src="js/presenteer-1.0.min.js"></script>
-			</pre>
+				&ltscript src="js/presenteer-1.0.min.js"></script></pre>
 			<p>Then, on page load, create Presenteer instances for all the presentations you want to show on the page : </p>
 <pre class="brush: js;">var presentation = new Presenteer(
 	"#presentation", 
@@ -161,8 +196,7 @@
 );</pre>
 			<p>I set followElementTransforms to false to not follow element transforms. Consequently, we don't need the Sylvester matrix library. If you want Presenteer.js to follow element transforms (e.g. element rotations), also add the Sylvester libraries to your page</p>
 			<pre class="brush:js">
-				&ltscript src="js/sylvester/sylvester.min.js"></script>
-			</pre>
+				&ltscript src="js/sylvester/sylvester.min.js"></script></pre>
 			<p>And set <code>followElementTransforms: true</code>. This is also the default</p>
 <pre class="brush: js;">var presentation = new Presenteer(
 	"#presentation", 
@@ -170,6 +204,7 @@
 	{ followElementTransforms: true }
 );</pre>
 			<h2>Examples</h2>
+			<h3>1. Two coupled presentations</h3>
 			<script>
 				$(window).load(function() {
 					var presentation2_counter = new Presenteer(
@@ -192,7 +227,7 @@
 			<div class="presentationcontainer" id="presentationcontainer2">
 				<div class="presentation" id="presentation2">
 					<div>Woo, that's a nice slide-counter at the right side! Click!</div>
-					<div id="r" style="-webkit-transform: translate(0px, 50px) rotate(90.01deg); -moz-transform: translate(0px, 50px) rotate(90.01deg); -o-transform: translate(0px, 50px) rotate(90.01deg);  -ms-transform: translate(0px, 50px) rotate(90.01deg); transform: translate(0px, 50px) rotate(90.01deg);">90 degree ROTATION</div>
+					<div style="-webkit-transform: translate(0px, 50px) rotate(90.01deg); -moz-transform: translate(0px, 50px) rotate(90.01deg); -o-transform: translate(0px, 50px) rotate(90.01deg);  -ms-transform: translate(0px, 50px) rotate(90.01deg); transform: translate(0px, 50px) rotate(90.01deg);">90 degree ROTATION</div>
 					<div style="-webkit-transform: translate(0,100px); -moz-transform: translate(0,100px); -o-transform: translate(0,100px); -ms-transform: translate(0,100px); transform: translate(0,100px);">And back! That's it for this demo. Click to restart.</div>
 				</div>
 			</div>
@@ -220,8 +255,71 @@
 				$("#presentationcontainer2_counter").on("click", function() { presentation2.next(); });
 				$("#presentationcontainer2").on("click", function() { presentation2.next(); });
 				presentation2_counter.start();
-				presentation2.start();
-			</pre>
+				presentation2.start();</pre>
+			<h3>2. Presentation with slide-indicator</h3>
+			<script>
+				$(window).load(function() {
+					// Create the HTML for the indicator
+					$("#presentation3 > div").each(function(index,elm) {
+						$("#presentation3_counter").append("<div>" + (index+1) + "</div>");
+					});
+					var presentation3_counter = new Presenteer(
+						"#presentation3_counter", 
+						$("#presentation3_counter > div"),
+						{ centerHorizontally: false }
+					);
+				
+					var presentation3 = new Presenteer(
+						"#presentation3", 
+						$("#presentation3 > div"), 
+						{ onAfterEnter : function(elm) { setTimeout(function(){presentation3_counter.next()},1); } }
+					);
+					
+					$("#presentationcontainer3_counter").on("click", function() { presentation3.next(); });
+					$("#presentationcontainer3").on("click", function() { presentation3.next(); });
+					presentation3_counter.start();
+					presentation3_counter.prev();
+					presentation3.start();
+				});
+			</script>
+			<div class="presentationcontainer" id="presentationcontainer3">
+				<div class="presentation" id="presentation3">
+					<div>First slide.</div>
+					<div>Second slide.</div>
+					<div>Third slide.</div>
+					<div>Fourth slide.</div>
+				</div>
+			</div>
+			<div class="presentationcontainer" id="presentationcontainer3_counter">
+				<div class="presentation" id="presentation3_counter">
+				</div>
+			</div>
+			<div class="clearfix">.</div>
+			<p>Code is as simple as</p>
+			<pre class="brush: js;">
+			$(window).load(function() {
+					// Create the HTML for the indicator
+					$("#presentation3 > div").each(function(index,elm) {
+						$("#presentation3_counter").append("<div>" + (index+1) + "</div>");
+					});
+					var presentation3_counter = new Presenteer(
+						"#presentation3_counter", 
+						$("#presentation3_counter > div"),
+						{ centerHorizontally: false }
+					);
+				
+					var presentation3 = new Presenteer(
+						"#presentation3", 
+						$("#presentation3 > div"), 
+						{ onAfterEnter : function(elm) { setTimeout(function(){presentation3_counter.next()},1); } }
+					);
+					
+					$("#presentationcontainer3_counter").on("click", function() { presentation3.next(); });
+					$("#presentationcontainer3").on("click", function() { presentation3.next(); });
+					presentation3_counter.start();
+					presentation3_counter.prev();
+					presentation3.start();
+				});</pre>
 		</div>
 	</div>
 </body>

@@ -16,9 +16,9 @@ Send me a message if you used Presenteer.js so we can feature you here.
 Version
 -----------------
 Trunk  
-+ Slimmed down matrix libraries to 1 compact file
-> todo Support intermediate steps
-> todo Better examples
++ Slimmed down matrix libraries to 1 compact file  
+> todo Support intermediate steps  
+> todo Better examples  
 1.0  
 + Center vertically or horizontally in viewport  
 + Presentation follows element transforms  
