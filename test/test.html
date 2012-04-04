@@ -1,0 +1,105 @@
+<html>
+	<head>
+		<script src="../js/jquery-1.7.1.min.js"></script>
+		<script src="../js/sylvester/sylvester.js"></script>
+		<script>
+			$(function() {
+				// Nothing
+			});
+			
+			function setRotate(value) {
+				console.log($("#rot3").position().left);
+				console.log($("#rot3").position().top);
+				$("#rot1").css("-moz-transform", "rotate("+value+"deg)");
+				$("#rot1").css("-webkit-transform", "rotate("+value+"deg)");
+				$("#rot3").css("-moz-transform", "rotate("+value+"deg)");
+				$("#rot3").css("-webkit-transform", "rotate("+value+"deg)");
+				setTimeout(function() {
+					// Calculate and set inverse
+					var matrix = $("#rot4").css("-moz-transform");
+					if (matrix == "none" || matrix == null) {
+						var matrix = $("#rot4").css("-webkit-transform");
+					}
+					var sylvesterMatrixString = matrix.replace(/matrix\((.+)\, (.+)\, (.+)\, (.+)\, (.+?)p?x?\, (.+?)p?x?\)/, "\$M([[$1,$3,$5],[$2,$4,$6],[0,0,1]])");
+					var sylvesterMatrix = eval(sylvesterMatrixString);
+					var inverseMatrix = sylvesterMatrix.inverse();
+					// .e(row,column), 1-based
+					console.log("matrix : " + sylvesterMatrix.inspect());
+					console.log("inverse matrix : " + inverseMatrix.inspect());
+					if (inverseMatrix == null) {
+						console.log("fout : " + sylvesterMatrixString);
+					} else {
+						inverseMatrixString = "matrix(" 
+							+ Math.round(inverseMatrix.e(1,1)*100000)/100000 + ", " + Math.round(inverseMatrix.e(2,1)*100000)/100000 + ", " + Math.round(inverseMatrix.e(1,2)*100000)/100000 + ", "
+							+ Math.round(inverseMatrix.e(2,2)*100000)/100000 + ", " + Math.round(inverseMatrix.e(1,3)*100000)/100000 + ", " + Math.round(inverseMatrix.e(2,3)*100000)/100000 + ""
+						+ ")";
+						console.log(inverseMatrixString);
+					}
+					//$("#rot2").css("-moz-transform", inverseMatrixString);
+					//$("#rot2").css("-webkit-transform", inverseMatrixString);
+					// Reset transform
+					var backup = $("#rot4").css("-webkit-transform");
+					$("#rot4").css("-webkit-transform", "rotate(0deg)");
+					console.log($("#rot4").position().left);
+					console.log($("#rot4").position().top);	
+					console.log($("#rot4").outerWidth());
+					console.log($("#rot4").outerHeight());	
+					// Draw element at transform origin
+					$("#presentation1").append("<div style='position: absolute; " +
+						"left: " + ($("#rot4").position().left * 1 + ($("#rot4").outerWidth() / 2)) + "px; " +
+						"top: " + ($("#rot4").position().top * 1 + ($("#rot4").outerHeight() / 2)) + "px; " +
+						"background: #ff0000; border: 1px solid #ff0000; " +
+					"'>.</div>");
+					$("#presentation1").css("-webkit-transform-origin", 
+						  ($("#rot4").position().left + ($("#rot4").outerWidth() / 2)) + "px " 
+						+ ($("#rot4").position().top + ($("#rot4").outerHeight() / 2))  + "px"
+					);
+					$("#rot4").css("-webkit-transform", backup);
+					$("#presentation1").css("-moz-transform", inverseMatrixString);
+					$("#presentation1").css("-webkit-transform", inverseMatrixString);
+				}, 1000);
+			}
+		</script>
+		<style>
+			#rot1, #rot2 {
+				-moz-transform-origin : 0 0;
+				-moz-transform : rotate(1deg);
+				-webkit-transform-origin : 0 0;
+				-webkit-transform : rotate(1deg);
+			}
+			
+			#rot3 { width: 100px; overflow: hidden; position: }
+			
+			* {
+				-moz-transition: all 0s ease;
+				-webkit-transition: all 0s ease;
+			}
+			
+			#container { background: #ddd; width: 300px; height: 300px; position: relative; }
+			
+			#presentation1 { position: relative; }
+		</style>
+	</head>
+	<body>
+		<div id="rot1">
+			Rotate 1
+		</div>
+		draaiing: <input id='input'></input> <button onClick="setRotate($('#input').val());">klik</button>
+		<div id="rot2">
+			Rotate 2
+		</div>
+		<div id="container">
+			Some text before the div
+			<div id="rot3">Rotate 3 in container</div>
+		</div>
+		<div id="presentation1">
+			<div>Welcome to <code>Presenteer.js</code>. Click in this box to continue.</div>
+			<div style="-webkit-transform: rotate(20deg);" id="rot4">Presenteer.js a very flexible HTML5 presentation tool. <br />Yet, it needs very little configuration</div>
+			<div>In fact, it can be used with one simple line of code</div>
+			<div>For example the code for this slideshow is <br /><code>var presentation = new Presenteer("#presentation1", $("#presentation1 > div"));</code></div>
+			<div>We can navigate by calling <code>presentation.next();</code> or <code>presentation.prev();</code></div>
+			<div>There's also several constructor-options and custom callBack functions.<br />Read on for more!</div>
+			<div style="-webkit-transform: rotate(30deg);">And a very long that stretches several lines and is rotated as well. That's great as it is able to showcase the cool feature that Presenteer.js has: it will follow element-transforms!</div>
+		</div>
+	</body>
+</html>
