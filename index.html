@@ -29,9 +29,7 @@
 	    }
 	</style>
 	<script src="js/jquery-1.7.1.min.js"></script>
-	<script src="js/sylvester/sylvester.js"></script>
-	<script src="js/sylvester/matrix.js"></script>
-	<script src="js/sylvester/vector.js"></script>
+	<script src="js/sylvester/sylvester.min.js"></script>
 	<script src="js/presenteer-1.0.js"></script>
 	
 	<script type="text/javascript" src="syntaxhighlighter/scripts/shCore.js"></script>
@@ -150,7 +148,7 @@
 			</p>
 			<p>
 			<h2>Installation</h2>
-			<p>Include jQuery, Presenteer.js and Sylvester in your page.</p>
+			<p>Include jQuery and Presenteer.js (and possibly Sylvester.js, see below) in your page.</p>
 			<pre class="brush: js;">
 				&ltscript src="js/jquery-1.7.1.min.js"></script>
 				&ltscript src="js/presenteer-1.0.min.js"></script>
@@ -161,11 +159,9 @@
 	$("#presentation > div"), 
 	{ followElementTransforms: false }
 );</pre>
-			<p>I set followElementTransforms to false to not follow element transforms. Consequently, we don't need the Sylvester matrix libraries. If you want Presenteer.js to follow element transforms (e.g. element rotations), also add the Sylvester libraries to your page</p>
+			<p>I set followElementTransforms to false to not follow element transforms. Consequently, we don't need the Sylvester matrix library. If you want Presenteer.js to follow element transforms (e.g. element rotations), also add the Sylvester libraries to your page</p>
 			<pre class="brush:js">
-				&ltscript src="js/sylvester/sylvester.js"></script>
-				&ltscript src="js/sylvester/matrix.js"></script>
-				&ltscript src="js/sylvester/vector.js"></script>
+				&ltscript src="js/sylvester/sylvester.min.js"></script>
 			</pre>
 			<p>And set <code>followElementTransforms: true</code>. This is also the default</p>
 <pre class="brush: js;">var presentation = new Presenteer(
