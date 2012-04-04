@@ -14,5 +14,5 @@ Version
 -----------------
 1.0  
 + Center vertically or horizontally in viewport  
-+ Presentation follows element transforms
-+ Works on Chrome, Firefox, Opera, Android, iPhone and IE9
++ Presentation follows element transforms  
++ Works on Chrome, Firefox, Opera, Android, iPhone and IE9  
