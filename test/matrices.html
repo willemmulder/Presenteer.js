@@ -11,11 +11,14 @@
 			3. Webkit will not process a javascript-set transform if it has a ; at the end of it
 			4. Webkit & Opera calculate e.offset() *after* applying the zoom on any element (i.e. the offset will be larger with a larger zoomFactor)
 		       Firefox always returns the same e.offset(), regardless of the zoomFactor (i.e. a larger zoomFactor will not influence the offset calculations)
+			5. IE9 does not have transitions
+			6. Opera does not disable transitions if we set them to "none"
+			7. Webkit does return null instead of "" for empty transitions
 			
 			*/
 		</script>
-		<script src="js/jquery-1.7.1.min.js"></script>
-		<script src="js/sylvester/sylvester.js"></script>
+		<script src="../js/jquery-1.7.1.min.js"></script>
+		<script src="../js/sylvester/sylvester.js"></script>
 		<script>
 			$(function() {
 				$("#container > div").each(function(index,elm) {
