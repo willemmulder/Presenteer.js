@@ -9,9 +9,16 @@ License
 Licensed under the Creative Commons BY-SA 3.0  
 http://creativecommons.org/licenses/by-sa/3.0/nl/
 
+Presenteer.js is used in
+----------------
+Send me a message if you used Presenteer.js so we can feature you here.
 
 Version
 -----------------
+Trunk  
++ Slimmed down matrix libraries to 1 compact file
+> todo Support intermediate steps
+> todo Better examples
 1.0  
 + Center vertically or horizontally in viewport  
 + Presentation follows element transforms  
