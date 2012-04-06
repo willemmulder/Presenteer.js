@@ -194,11 +194,11 @@ function Presenteer(canvas, elements, options) {
 			var p = transitions[prefixID];
 			var transitionIsInThisPrefix = false;
 			if (
-				(p["transition-delay"] != "" && p["transition-delay"] != "0" && p["transition-delay"] != null)
-				|| (p["transition-duration"] != "" && p["transition-duration"] != "0" && p["transition-duration"] != null)
-				|| (p["transition-property"] != "" && p["transition-property"] != "none" && p["transition-property"] != null)
-				|| (p["transition-timing-function"] != "" && p["transition-timing-function"] != "" && p["transition-timing-function"] != null)
-			){
+				p["transition-duration"] != "" 
+				&& p["transition-duration"] != "0" 
+				&& p["transition-duration"] != "0s"
+				&& p["transition-duration"] != null)
+			{
 				return p["transition-property"] + " " + p["transition-duration"] + " " + p["transition-timing-function"];
 			}
 		}
