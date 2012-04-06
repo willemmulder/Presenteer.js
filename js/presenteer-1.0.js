@@ -31,6 +31,7 @@ function Presenteer(canvas, elements, options) {
 		}
 	});
 	var currentIndex = -1;
+	var prevIndex = -1;
 	
 	/*
 	* Options
@@ -356,85 +357,104 @@ function Presenteer(canvas, elements, options) {
 			this.showCurrent();
 		},
 		restart : function() {
+			prevIndex = currentIndex;
 			currentIndex = 0;
 			this.showCurrent();
 		},
 		show : function(index) {
+			prevIndex = currentIndex;
 			currentIndex = index;
 			this.showCurrent();
 		},
 		next : function() {
-			var prevIndex = currentIndex;
+			prevIndex = currentIndex;
 			currentIndex++;
 			if (currentIndex > elements.length-1) {
 				currentIndex = 0;
 			}
-			if (elements[prevIndex] && typeof(elements[prevIndex].onBeforeLeaveToNext) == "function") {
-				elements[prevIndex].onBeforeLeaveToNext();
-			}
-			if (typeof(elements[currentIndex].onBeforeEnterFromPrev) == "function") {
-				elements[currentIndex].onBeforeEnterFromPrev();
-			}
-			if (typeof(elements[prevIndex].onBeforeLeave) == "function") {
-				elements[prevIndex].onBeforeLeave();
-			}
-			options.onBeforeLeave(elements[prevIndex]);
 			this.showCurrent();
-			if (elements[prevIndex] && typeof(elements[prevIndex].onAfterLeaveToNext) == "function") {
-				elements[prevIndex].onAfterLeaveToNext();
-			}
-			if (typeof(elements[currentIndex].onAfterEnterFromPrev) == "function") {
-				elements[currentIndex].onAfterEnterFromPrev();
-			}
-			if (typeof(elements[prevIndex].onAfterLeave) == "function") {
-				elements[prevIndex].onAfterLeave();
-			}
-			options.onBeforeLeave(elements[prevIndex]);
 		},
 		prev : function() {
-			var prevIndex = currentIndex;
+			prevIndex = currentIndex;
 			currentIndex--;
 			if (currentIndex < 0) {
 				currentIndex = elements.length-1;
 			}
-			if (typeof(elements[prevIndex].onBeforeLeaveToPrev) == "function") {
-				elements[prevIndex].onBeforeLeaveToPrev();
-			}
-			if (typeof(elements[currentIndex].onBeforeEnterFromNext) == "function") {
-				elements[currentIndex].onBeforeEnterFromNext();
-			}
-			if (typeof(elements[prevIndex].onBeforeLeave) == "function") {
-				elements[prevIndex].onBeforeLeave();
-			}
-			options.onBeforeLeave(elements[prevIndex]);
 			this.showCurrent();
-			if (typeof(elements[prevIndex].onAfterLeaveToPrev) == "function") {
-				elements[prevIndex].onAfterLeaveToPrev();
-			}
-			if (typeof(elements[currentIndex].onAfterEnterFromNext) == "function") {
-				elements[currentIndex].onAfterEnterFromNext();
-			}
-			if (typeof(elements[prevIndex].onAfterLeave) == "function") {
-				elements[prevIndex].onAfterLeave();
-			}
-			options.onAfterLeave(elements[prevIndex]);
 		},
 		previous : function() {
 			this.prev();
 		},
 		showCurrent : function() {
+			// Forward-moving 'before' callbacks
+			if (prevIndex < currentIndex) {
+				if (elements[prevIndex] && typeof(elements[prevIndex].onBeforeLeaveToNext) == "function") {
+					elements[prevIndex].onBeforeLeaveToNext();
+				}
+				if (typeof(elements[currentIndex].onBeforeEnterFromPrev) == "function") {
+					elements[currentIndex].onBeforeEnterFromPrev();
+				}
+			}
+			// Backward-moving 'before' callbacks
+			if (prevIndex > currentIndex) {
+				if (elements[prevIndex] && typeof(elements[prevIndex].onBeforeLeaveToPrev) == "function") {
+					elements[prevIndex].onBeforeLeaveToPrev();
+				}
+				if (typeof(elements[currentIndex].onBeforeEnterFromNext) == "function") {
+					elements[currentIndex].onBeforeEnterFromNext();
+				}
+			}
+			// All-direction 'before' callbacks
+			if (elements[prevIndex] && typeof(elements[prevIndex].onBeforeLeave) == "function") {
+				elements[prevIndex].onBeforeLeave();
+			}
 			if (typeof(elements[currentIndex].onBeforeEnter) == "function") {
 				elements[currentIndex].onBeforeEnter();
 			}
+			// General callbacks
+			if (elements[prevIndex]) { options.onBeforeLeave(elements[prevIndex]); }
 			options.onBeforeEnter(elements[currentIndex]);
+			
+			// Show element
 			show(elements[currentIndex]);
+			
+			// Forward-moving 'after' callbacks
+			if (prevIndex < currentIndex) {
+				if (elements[prevIndex] && typeof(elements[prevIndex].onAfterLeaveToNext) == "function") {
+					elements[prevIndex].onAfterLeaveToNext();
+				}
+				if (typeof(elements[currentIndex].onAfterEnterFromPrev) == "function") {
+					elements[currentIndex].onAfterEnterFromPrev();
+				}
+			}
+			// Backward-moving 'after' callbacks
+			if (prevIndex > currentIndex) {
+				if (typeof(elements[prevIndex].onAfterLeaveToPrev) == "function") {
+					elements[prevIndex].onAfterLeaveToPrev();
+				}
+				if (typeof(elements[currentIndex].onAfterEnterFromNext) == "function") {
+					elements[currentIndex].onAfterEnterFromNext();
+				}
+			}
+			// All-direction 'after' callbacks
+			if (elements[prevIndex] && typeof(elements[prevIndex].onAfterLeave) == "function") {
+				elements[prevIndex].onAfterLeave();
+			}
 			if (typeof(elements[currentIndex].onAfterEnter) == "function") {
 				elements[currentIndex].onAfterEnter();
 			}
+			// General callbacks
+			if (elements[prevIndex]) { options.onAfterLeave(elements[prevIndex]); }
 			options.onAfterEnter(elements[currentIndex]);
 		},
 		getCanvas : function() {
 			return $(canvas);
+		},
+		getCurrentIndex : function() {
+			return currentIndex;
+		},
+		getPrevIndex : function() {
+			return prevIndex;
 		}
 	};
 }
