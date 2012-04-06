@@ -1,3 +1,4 @@
+<!DOCTYPE html>
 <html>
 <head>
 	<title>Presenteer.js</title>
@@ -66,7 +67,7 @@
 	</style>
 	<script src="js/jquery-1.7.1.min.js"></script>
 	<script src="js/sylvester/sylvester.min.js"></script>
-	<script src="js/presenteer-1.0.js"></script>
+	<script src="js/presenteer.js"></script>
 	
 	<script type="text/javascript" src="syntaxhighlighter/scripts/shCore.js"></script>
 	<script type="text/javascript" src="syntaxhighlighter/scripts/shBrushJScript.js"></script>
@@ -85,16 +86,7 @@
 		<script>
 			$(window).load(function() {
 				var presentation1 = new Presenteer("#presentation1", $("#presentation1 > div"), { 
-					centerHorizontally : false, 
-					centerVertically: true, 
-					followElementTransforms: true,
-					transition: {
-						"transition-delay" : "0s",
-						"transition-duration" : "0.5s",
-						"transition-property" : "all",
-						"transition-timing-function" : "ease"
-					},
-					useExistingTransitionIfAvailable: false
+					centerHorizontally : false
 				});
 				$("#presentationcontainer1").on("click", function() { presentation1.next(); });
 				presentation1.start();
@@ -105,7 +97,7 @@
 				<div>Welcome to <code class="inline">Presenteer.js</code>. Click in this box to continue.</div>
 				<div>Presenteer.js a flexible HTML5 presentation tool. <br />Yet, it needs very little configuration</div>
 				<div>In fact, it can be used with one simple line of code</div>
-				<div>For example the code for this slideshow is <br /><pre class="brush: js;">var presentation = new Presenteer("#presentation1", $("#presentation1 > div"));</pre></div>
+				<div>For example the code for this slideshow is <br /><pre class="brush: js;">var presentation = new Presenteer("#presentation1", $("#presentation1 > div"), { centerHorizontally: false });</pre></div>
 				<div>We can navigate by calling <code class="inline">presentation.next();</code> or <code class="inline">presentation.prev();</code></div>
 				<div style="-webkit-transform: rotate(8deg); -moz-transform: rotate(8deg); -o-transform: rotate(8deg); -ms-transform: rotate(8deg); transform: rotate(8deg);">The nice thing is that Presenteer follows element-transforms like on this element!</div>
 				<div>There's also several constructor-options and custom callback functions.<br />Read on for more!</div>
@@ -120,9 +112,42 @@
 				<p>
 					And then navigate through the presentation with <code class="inline">presentation.start();</code>, <code class="inline">presentation.next();</code>, <code class="inline">presentation.prev();</code> and <code class="inline">presentation.show(0-based-index);</code>
 				</p>
+			<h2>Installation</h2>
+				<p>Include jQuery and Presenteer.js (and possibly Sylvester.js, see below) in your page.</p>
+				<pre class="brush: js;">
+					&ltscript src="js/jquery-1.7.1.min.js"></script>
+					&ltscript src="js/presenteer-1.0.min.js"></script></pre>
+				<p>Create the HTML and style it with CSS</p>
+				<pre class="brush:js">
+				<div class="presentationcontainer" id="presentationcontainer1">
+					<div class="presentationcanvas" id="presentation1">
+						<div>First slide.</div>
+						<div>Second slide.</div>
+						<div>Third slide.</div>
+						<div>Fourth slide.</div>
+					</div>
+				</div></pre>
+				<p>Then, on page load, create a Presenteer instances for every presentation on the page. For this example, we only have one presentation, so the below code suffices.</p>
+				<pre class="brush: js;">var presentation = new Presenteer(
+	"#presentation1", 
+	$("#presentationq > div"), 
+	{ followElementTransforms: false }
+);</pre>
+				<p>I set followElementTransforms to false to make Presenteer not follow element transforms. Only in that case, we don't need the Sylvester matrix library. If you <strong>do</strong> want Presenteer.js to follow element transforms (e.g. element rotations), also add the Sylvester library to your page</p>
+				<pre class="brush:js">
+					&ltscript src="js/sylvester/sylvester.min.js"></script></pre>
+				<p>And set <code>followElementTransforms: true</code>. This is also the default</p>
+				<pre class="brush: js;">var presentation = new Presenteer(
+	"#presentation1", 
+	$("#presentation1 > div"), 
+	{ followElementTransforms: true }
+);</pre>
 			<h2>Constructor options</h2>
+				<p>Apart from the <code>followElementTransforms</code> constructor argument, there's many more options and callbacks. A general Presenteer instantiation looks like this:</p>
 				<p><pre class="brush: js;">var presentation = new Presenteer(canvas, elements, options);</pre></p>
-				<p>Where <code class="inline">elements</code> is a list of objects that are any of the following</p>
+				<p>Where <code class="inline">canvas</code> is a selector or jQuery element of the canvas on which the presentation is placed. It is this canvas that will be repositioned with CSS3 transform to slide a certain element into view.</p>
+				<p>It is good practice to wrap the presentation in a containing div with <code>overflow: hidden</code>. This container will act as the viewport for the presentation.</p>
+				<p>The list of elements on the canvas is specified in the <code class="inline">elements</code> argument. It is a list of objects that are any of the following</p>
 				<ol>
 					<li>CSS selector, like "#elm"</li>
 					<li>jQuery element, like $("#elm")</li>
@@ -183,26 +208,6 @@
 				To go to an arbitrary element, call <code class="inline">presentation.show(index);</code> where index is 0-based.
 			</p>
 			<p>
-			<h2>Installation</h2>
-			<p>Include jQuery and Presenteer.js (and possibly Sylvester.js, see below) in your page.</p>
-			<pre class="brush: js;">
-				&ltscript src="js/jquery-1.7.1.min.js"></script>
-				&ltscript src="js/presenteer-1.0.min.js"></script></pre>
-			<p>Then, on page load, create Presenteer instances for all the presentations you want to show on the page : </p>
-<pre class="brush: js;">var presentation = new Presenteer(
-	"#presentation", 
-	$("#presentation > div"), 
-	{ followElementTransforms: false }
-);</pre>
-			<p>I set followElementTransforms to false to not follow element transforms. Consequently, we don't need the Sylvester matrix library. If you want Presenteer.js to follow element transforms (e.g. element rotations), also add the Sylvester libraries to your page</p>
-			<pre class="brush:js">
-				&ltscript src="js/sylvester/sylvester.min.js"></script></pre>
-			<p>And set <code>followElementTransforms: true</code>. This is also the default</p>
-<pre class="brush: js;">var presentation = new Presenteer(
-	"#presentation", 
-	$("#presentation > div"), 
-	{ followElementTransforms: true }
-);</pre>
 			<h2>Examples</h2>
 			<h3>1. Two coupled presentations</h3>
 			<script>
@@ -239,7 +244,23 @@
 				</div>
 			</div>
 			<div class="clearfix">.</div>
-			<p>Code is as simple as</p>
+			<p>HTML</p>
+			<pre class="brush: js;">
+			<div class="presentationcontainer" id="presentationcontainer2">
+				<div class="presentation" id="presentation2">
+					<div>Woo, that's a nice slide-counter at the right side! Click!</div>
+					<div style="-webkit-transform: translate(0px, 50px) rotate(90.01deg); -moz-transform: translate(0px, 50px) rotate(90.01deg); -o-transform: translate(0px, 50px) rotate(90.01deg);  -ms-transform: translate(0px, 50px) rotate(90.01deg); transform: translate(0px, 50px) rotate(90.01deg);">90 degree ROTATION</div>
+					<div style="-webkit-transform: translate(0,100px); -moz-transform: translate(0,100px); -o-transform: translate(0,100px); -ms-transform: translate(0,100px); transform: translate(0,100px);">And back! That's it for this demo. Click to restart.</div>
+				</div>
+			</div>
+			<div class="presentationcontainer" id="presentationcontainer2_counter">
+				<div class="presentation" id="presentation2_counter">
+					<div>3</div>
+					<div>2</div>
+					<div>1</div>
+				</div>
+			</div></pre>
+			<p>Code</p>
 			<pre class="brush: js;">
 			var presentation2_counter = new Presenteer(
 					"#presentation2_counter", 
@@ -295,6 +316,20 @@
 				</div>
 			</div>
 			<div class="clearfix">.</div>
+			<p>HTML</p>
+			<pre class="brush: js;">
+			<div class="presentationcontainer" id="presentationcontainer3">
+				<div class="presentation" id="presentation3">
+					<div>First slide.</div>
+					<div>Second slide.</div>
+					<div>Third slide.</div>
+					<div>Fourth slide.</div>
+				</div>
+			</div>
+			<div class="presentationcontainer" id="presentationcontainer3_counter">
+				<div class="presentation" id="presentation3_counter">
+				</div>
+			</div></pre>
 			<p>Code</p>
 			<pre class="brush: js;">
 			$(window).load(function() {
