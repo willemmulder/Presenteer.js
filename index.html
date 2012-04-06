@@ -272,7 +272,7 @@
 					var presentation3 = new Presenteer(
 						"#presentation3", 
 						$("#presentation3 > div"), 
-						{ onAfterEnter : function(elm) { setTimeout(function(){presentation3_counter.next()},1); } }
+						{ onAfterEnter : function(elm) { setTimeout(function(){presentation3_counter.show(presentation3.getCurrentIndex())},1); } }
 					);
 					
 					$("#presentationcontainer3_counter").on("click", function() { presentation3.next(); });
@@ -295,7 +295,7 @@
 				</div>
 			</div>
 			<div class="clearfix">.</div>
-			<p>Code is as simple as</p>
+			<p>Code</p>
 			<pre class="brush: js;">
 			$(window).load(function() {
 					// Create the HTML for the indicator
@@ -311,7 +311,7 @@
 					var presentation3 = new Presenteer(
 						"#presentation3", 
 						$("#presentation3 > div"), 
-						{ onAfterEnter : function(elm) { setTimeout(function(){presentation3_counter.next()},1); } }
+						{ onAfterEnter : function(elm) { setTimeout(function(){presentation3_counter.show(presentation3.getCurrentIndex())},1); } }
 					);
 					
 					$("#presentationcontainer3_counter").on("click", function() { presentation3.next(); });

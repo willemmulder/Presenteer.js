@@ -69,7 +69,7 @@ function Presenteer(canvas, elements, options) {
 	
 	/*
 	* Main function to show an element
-	* Second version: takes into account element transforms
+	* Takes into account element transforms
 	*/
 	function show(elm) {
 		var e = $(elm.element);
@@ -158,50 +158,6 @@ function Presenteer(canvas, elements, options) {
 			setTransformOrigin(canvas, transformOriginLeft, transformOriginTop);
 			setTransformation(canvas,transform);
 		}, 1);
-	}
-	
-	/*
-	* Main function to show an element
-	*/
-	function show2(elm) {
-		var e = $(elm.element);
-		
-		// Temporarily disable transitions while we change things around
-		var transitionsBackup = getTransitions(canvas);
-		setTransitions(canvas,{});
-		var transitionElmBackup = getTransitions(e);
-		setTransitions(e,{});
-		
-		// Reset canvas transformations.
-		var canvasTransformationBackup = getTransformation(canvas);
-		setTransformation(canvas, "");
-		
-		// Reset element's transformations. This eases calculations.
-		var elementTransformationBackup = getTransformation(e);
-		setTransformation(e, "");
-		
-		var baseLeft = e.offset().left  - canvas.offset().left;
-		var baseTop = e.offset().top  - canvas.offset().top;
-		//console.log("left " + baseLeft);
-		//console.log("top " + baseTop);
-
-		// Calculate new transform Origin
-		var transformOriginLeft = (baseLeft * 1 + (e.outerWidth() / 2)) + "px";
-		var transformOriginTop = (baseTop * 1 + (e.outerHeight() / 2)) + "px";
-		
-		// Set element transformation back to the original state
-		setTransformation(e, elementTransformationBackup);
-		setTransformation(canvas, canvasTransformationBackup);
-
-		// Set transitions to how they were
-		setTransitions(canvas, transitionsBackup);
-		setTransitions(elm, transitionsBackup);
-		
-		// Set canvas transformations to correct values
-		setTransformOrigin(canvas, transformOriginLeft, transformOriginTop);
-		var inverseM = processElementTransforms(e);
-		var transform = " translate(" + (baseLeft*-1) + "px," + (baseTop*-1) + "px) " + inverseM;
-		setTransformation(canvas,transform);
 	}
 	
 	var prefixes = { moz : "Moz", webkit : "Webkit", o : "O", ms : "ms", all : "" };
