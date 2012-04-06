@@ -31,6 +31,7 @@ function Presenteer(canvas, elements, options) {
 		}
 	});
 	var currentIndex = -1;
+	var prevIndex = -1;
 	
 	/*
 	* Options
@@ -68,7 +69,7 @@ function Presenteer(canvas, elements, options) {
 	
 	/*
 	* Main function to show an element
-	* Second version: takes into account element transforms
+	* Takes into account element transforms
 	*/
 	function show(elm) {
 		var e = $(elm.element);
@@ -159,50 +160,6 @@ function Presenteer(canvas, elements, options) {
 		}, 1);
 	}
 	
-	/*
-	* Main function to show an element
-	*/
-	function show2(elm) {
-		var e = $(elm.element);
-		
-		// Temporarily disable transitions while we change things around
-		var transitionsBackup = getTransitions(canvas);
-		setTransitions(canvas,{});
-		var transitionElmBackup = getTransitions(e);
-		setTransitions(e,{});
-		
-		// Reset canvas transformations.
-		var canvasTransformationBackup = getTransformation(canvas);
-		setTransformation(canvas, "");
-		
-		// Reset element's transformations. This eases calculations.
-		var elementTransformationBackup = getTransformation(e);
-		setTransformation(e, "");
-		
-		var baseLeft = e.offset().left  - canvas.offset().left;
-		var baseTop = e.offset().top  - canvas.offset().top;
-		//console.log("left " + baseLeft);
-		//console.log("top " + baseTop);
-
-		// Calculate new transform Origin
-		var transformOriginLeft = (baseLeft * 1 + (e.outerWidth() / 2)) + "px";
-		var transformOriginTop = (baseTop * 1 + (e.outerHeight() / 2)) + "px";
-		
-		// Set element transformation back to the original state
-		setTransformation(e, elementTransformationBackup);
-		setTransformation(canvas, canvasTransformationBackup);
-
-		// Set transitions to how they were
-		setTransitions(canvas, transitionsBackup);
-		setTransitions(elm, transitionsBackup);
-		
-		// Set canvas transformations to correct values
-		setTransformOrigin(canvas, transformOriginLeft, transformOriginTop);
-		var inverseM = processElementTransforms(e);
-		var transform = " translate(" + (baseLeft*-1) + "px," + (baseTop*-1) + "px) " + inverseM;
-		setTransformation(canvas,transform);
-	}
-	
 	var prefixes = { moz : "Moz", webkit : "Webkit", o : "O", ms : "ms", all : "" };
 	
 	function getTransitions(e) {
@@ -237,11 +194,11 @@ function Presenteer(canvas, elements, options) {
 			var p = transitions[prefixID];
 			var transitionIsInThisPrefix = false;
 			if (
-				(p["transition-delay"] != "" && p["transition-delay"] != "0" && p["transition-delay"] != null)
-				|| (p["transition-duration"] != "" && p["transition-duration"] != "0" && p["transition-duration"] != null)
-				|| (p["transition-property"] != "" && p["transition-property"] != "none" && p["transition-property"] != null)
-				|| (p["transition-timing-function"] != "" && p["transition-timing-function"] != "" && p["transition-timing-function"] != null)
-			){
+				p["transition-duration"] != "" 
+				&& p["transition-duration"] != "0" 
+				&& p["transition-duration"] != "0s"
+				&& p["transition-duration"] != null)
+			{
 				return p["transition-property"] + " " + p["transition-duration"] + " " + p["transition-timing-function"];
 			}
 		}
@@ -356,85 +313,104 @@ function Presenteer(canvas, elements, options) {
 			this.showCurrent();
 		},
 		restart : function() {
+			prevIndex = currentIndex;
 			currentIndex = 0;
 			this.showCurrent();
 		},
 		show : function(index) {
+			prevIndex = currentIndex;
 			currentIndex = index;
 			this.showCurrent();
 		},
 		next : function() {
-			var prevIndex = currentIndex;
+			prevIndex = currentIndex;
 			currentIndex++;
 			if (currentIndex > elements.length-1) {
 				currentIndex = 0;
 			}
-			if (elements[prevIndex] && typeof(elements[prevIndex].onBeforeLeaveToNext) == "function") {
-				elements[prevIndex].onBeforeLeaveToNext();
-			}
-			if (typeof(elements[currentIndex].onBeforeEnterFromPrev) == "function") {
-				elements[currentIndex].onBeforeEnterFromPrev();
-			}
-			if (typeof(elements[prevIndex].onBeforeLeave) == "function") {
-				elements[prevIndex].onBeforeLeave();
-			}
-			options.onBeforeLeave(elements[prevIndex]);
 			this.showCurrent();
-			if (elements[prevIndex] && typeof(elements[prevIndex].onAfterLeaveToNext) == "function") {
-				elements[prevIndex].onAfterLeaveToNext();
-			}
-			if (typeof(elements[currentIndex].onAfterEnterFromPrev) == "function") {
-				elements[currentIndex].onAfterEnterFromPrev();
-			}
-			if (typeof(elements[prevIndex].onAfterLeave) == "function") {
-				elements[prevIndex].onAfterLeave();
-			}
-			options.onBeforeLeave(elements[prevIndex]);
 		},
 		prev : function() {
-			var prevIndex = currentIndex;
+			prevIndex = currentIndex;
 			currentIndex--;
 			if (currentIndex < 0) {
 				currentIndex = elements.length-1;
 			}
-			if (typeof(elements[prevIndex].onBeforeLeaveToPrev) == "function") {
-				elements[prevIndex].onBeforeLeaveToPrev();
-			}
-			if (typeof(elements[currentIndex].onBeforeEnterFromNext) == "function") {
-				elements[currentIndex].onBeforeEnterFromNext();
-			}
-			if (typeof(elements[prevIndex].onBeforeLeave) == "function") {
-				elements[prevIndex].onBeforeLeave();
-			}
-			options.onBeforeLeave(elements[prevIndex]);
 			this.showCurrent();
-			if (typeof(elements[prevIndex].onAfterLeaveToPrev) == "function") {
-				elements[prevIndex].onAfterLeaveToPrev();
-			}
-			if (typeof(elements[currentIndex].onAfterEnterFromNext) == "function") {
-				elements[currentIndex].onAfterEnterFromNext();
-			}
-			if (typeof(elements[prevIndex].onAfterLeave) == "function") {
-				elements[prevIndex].onAfterLeave();
-			}
-			options.onAfterLeave(elements[prevIndex]);
 		},
 		previous : function() {
 			this.prev();
 		},
 		showCurrent : function() {
+			// Forward-moving 'before' callbacks
+			if (prevIndex < currentIndex) {
+				if (elements[prevIndex] && typeof(elements[prevIndex].onBeforeLeaveToNext) == "function") {
+					elements[prevIndex].onBeforeLeaveToNext();
+				}
+				if (typeof(elements[currentIndex].onBeforeEnterFromPrev) == "function") {
+					elements[currentIndex].onBeforeEnterFromPrev();
+				}
+			}
+			// Backward-moving 'before' callbacks
+			if (prevIndex > currentIndex) {
+				if (elements[prevIndex] && typeof(elements[prevIndex].onBeforeLeaveToPrev) == "function") {
+					elements[prevIndex].onBeforeLeaveToPrev();
+				}
+				if (typeof(elements[currentIndex].onBeforeEnterFromNext) == "function") {
+					elements[currentIndex].onBeforeEnterFromNext();
+				}
+			}
+			// All-direction 'before' callbacks
+			if (elements[prevIndex] && typeof(elements[prevIndex].onBeforeLeave) == "function") {
+				elements[prevIndex].onBeforeLeave();
+			}
 			if (typeof(elements[currentIndex].onBeforeEnter) == "function") {
 				elements[currentIndex].onBeforeEnter();
 			}
+			// General callbacks
+			if (elements[prevIndex]) { options.onBeforeLeave(elements[prevIndex]); }
 			options.onBeforeEnter(elements[currentIndex]);
+			
+			// Show element
 			show(elements[currentIndex]);
+			
+			// Forward-moving 'after' callbacks
+			if (prevIndex < currentIndex) {
+				if (elements[prevIndex] && typeof(elements[prevIndex].onAfterLeaveToNext) == "function") {
+					elements[prevIndex].onAfterLeaveToNext();
+				}
+				if (typeof(elements[currentIndex].onAfterEnterFromPrev) == "function") {
+					elements[currentIndex].onAfterEnterFromPrev();
+				}
+			}
+			// Backward-moving 'after' callbacks
+			if (prevIndex > currentIndex) {
+				if (typeof(elements[prevIndex].onAfterLeaveToPrev) == "function") {
+					elements[prevIndex].onAfterLeaveToPrev();
+				}
+				if (typeof(elements[currentIndex].onAfterEnterFromNext) == "function") {
+					elements[currentIndex].onAfterEnterFromNext();
+				}
+			}
+			// All-direction 'after' callbacks
+			if (elements[prevIndex] && typeof(elements[prevIndex].onAfterLeave) == "function") {
+				elements[prevIndex].onAfterLeave();
+			}
 			if (typeof(elements[currentIndex].onAfterEnter) == "function") {
 				elements[currentIndex].onAfterEnter();
 			}
+			// General callbacks
+			if (elements[prevIndex]) { options.onAfterLeave(elements[prevIndex]); }
 			options.onAfterEnter(elements[currentIndex]);
 		},
 		getCanvas : function() {
 			return $(canvas);
+		},
+		getCurrentIndex : function() {
+			return currentIndex;
+		},
+		getPrevIndex : function() {
+			return prevIndex;
 		}
 	};
 }
