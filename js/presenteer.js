@@ -32,6 +32,10 @@ function Presenteer(canvas, elements, options) {
 	});
 	var currentIndex = -1;
 	var prevIndex = -1;
+	var fullScreenSupport = document.documentElement.requestFullScreen || document.documentElement.mozRequestFullScreen || document.documentElement.webkitRequestFullScreen;
+	var isFullScreen = false;
+	document.addEventListener("mozfullscreenchange", function() { if (typeof(mozFullScreenElement) == "undefined") { isFullScreen = false; }; setTimeout(function() { show(elements[currentIndex]); }, 10); });
+	document.addEventListener("webkitfullscreenchange", function() { if (typeof(webkitFullScreenElement) == "undefined") { isFullScreen = false; }; setTimeout(function() { show(elements[currentIndex]); }, 10); });
 	
 	/*
 	* Options
@@ -304,6 +308,55 @@ function Presenteer(canvas, elements, options) {
 		return totalWidth;
 	}
 	
+	function toggleFullScreen(elm) {  
+		if (isFullScreen === false) {
+			if (typeof(elm) == "undefined") {
+				var elm = $(canvas).parent().get(0);
+			}
+			fullScreen();
+		} else {  
+			cancelFullScreen();
+		}  
+    }
+	
+	function fullScreen(elm) {
+		if (fullScreenSupport) {
+			if (typeof(elm) == "undefined") {
+				var elm = $(canvas).parent().get(0);
+			} else {
+				var elm = $(elm).get(0);
+			}
+			if (elm.requestFullScreen) {
+				elm.requestFullScreen();
+			} else if (elm.mozRequestFullScreen) {
+				elm.mozRequestFullScreen();
+				elm.mozfullscreenerror = function() { isFullScreen = false; return; }
+			} else if (elm.webkitRequestFullScreen) {  
+				elm.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+			}
+		} else {
+			// TODO: Fallback if there's no full-screen support
+			// Make parent full-width
+		}
+		isFullScreen = true;
+	}
+	
+	function cancelFullScreen() {
+		if (fullScreenSupport) {
+			if (document.cancelFullScreen) {  
+			  document.cancelFullScreen();  
+			} else if (document.mozCancelFullScreen) {  
+			  document.mozCancelFullScreen();  
+			} else if (document.webkitCancelFullScreen) {  
+			  document.webkitCancelFullScreen();  
+			}
+		} else {
+			// TODO: Fallback if there's no full-screen support
+			// Make parent normal-width
+		}
+		isFullScreen = false;
+	}
+	
 	/*
 	* The facade for the 'outer world' to work with
 	*/
@@ -406,11 +459,29 @@ function Presenteer(canvas, elements, options) {
 		getCanvas : function() {
 			return $(canvas);
 		},
+		
 		getCurrentIndex : function() {
 			return currentIndex;
 		},
 		getPrevIndex : function() {
 			return prevIndex;
+		},
+		
+		toggleFullScreen : function(elm) {
+			toggleFullScreen(elm);
+			show(elements[currentIndex]);
+		},
+		fullScreen : function(elm) {
+			fullScreen(elm);
+			show(elements[currentIndex]);
+		},
+		cancelFullScreen : function() {
+			cancelFullScreen();
+			show(elements[currentIndex]);
+		},
+		isFullScreen : function() {
+			return isFullScreen;
 		}
+		
 	};
 }
