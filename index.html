@@ -3,7 +3,7 @@
 <head>
 	<title>Presenteer.js</title>
 	<style>
-		body { font: 14px arial, verdana; margin: 0px; padding: 0px; color: #222233; background: #cc1919; background: #fbfbfb; }
+		body, html { font: 14px arial, verdana; margin: 0px; padding: 0px; color: #222233; background: #cc1919; background: #fbfbfb; }
 		h1, h2, h3, h4 { color: #cc1919; }
 		* { 
 			-webkit-box-sizing: border-box;
@@ -227,23 +227,29 @@
 					$("#presentationcontainer2").on("click", function() { presentation2.next(); });
 					presentation2_counter.start();
 					presentation2.start();
+					$("#presentation2fullscreen").on("click", function() { presentation2.fullScreen($("#coupledpresentations")); });
 				});
 			</script>
-			<div class="presentationcontainer" id="presentationcontainer2">
-				<div class="presentation" id="presentation2">
-					<div>Woo, that's a nice slide-counter at the right side! Click!</div>
-					<div style="-webkit-transform: translate(0px, 50px) rotate(90.01deg); -moz-transform: translate(0px, 50px) rotate(90.01deg); -o-transform: translate(0px, 50px) rotate(90.01deg);  -ms-transform: translate(0px, 50px) rotate(90.01deg); transform: translate(0px, 50px) rotate(90.01deg);">90 degree ROTATION</div>
-					<div style="-webkit-transform: translate(0,100px); -moz-transform: translate(0,100px); -o-transform: translate(0,100px); -ms-transform: translate(0,100px); transform: translate(0,100px);">And back! That's it for this demo. Click to restart.</div>
+			<div id="coupledpresentations">
+				<div class="presentationcontainer" id="presentationcontainer2">
+					<div class="presentation" id="presentation2">
+						<div>Woo, that's a nice slide-counter at the right side! Click!</div>
+						<div style="-webkit-transform: translate(0px, 50px) rotate(90.01deg); -moz-transform: translate(0px, 50px) rotate(90.01deg); -o-transform: translate(0px, 50px) rotate(90.01deg);  -ms-transform: translate(0px, 50px) rotate(90.01deg); transform: translate(0px, 50px) rotate(90.01deg);">90 degree ROTATION</div>
+						<div style="-webkit-transform: translate(0,100px); -moz-transform: translate(0,100px); -o-transform: translate(0,100px); -ms-transform: translate(0,100px); transform: translate(0,100px);">And back! That's it for this demo. Click to restart.</div>
+					</div>
 				</div>
-			</div>
-			<div class="presentationcontainer" id="presentationcontainer2_counter">
-				<div class="presentation" id="presentation2_counter">
-					<div>3</div>
-					<div>2</div>
-					<div>1</div>
+				<div class="presentationcontainer" id="presentationcontainer2_counter">
+					<div class="presentation" id="presentation2_counter">
+						<div>3</div>
+						<div>2</div>
+						<div>1</div>
+					</div>
 				</div>
+				<div class="clearfix">.</div>
 			</div>
-			<div class="clearfix">.</div>
+			<p>
+				<button id="presentation2fullscreen">Go fullscreen</button>
+			</p>
 			<p>HTML</p>
 			<pre class="brush: js;">
 			<div class="presentationcontainer" id="presentationcontainer2">
@@ -259,7 +265,10 @@
 					<div>2</div>
 					<div>1</div>
 				</div>
-			</div></pre>
+			</div>
+			<p>
+				<button id="presentation2fullscreen">Go fullscreen</button>
+			</p></pre>
 			<p>Code</p>
 			<pre class="brush: js;">
 			var presentation2_counter = new Presenteer(
@@ -276,7 +285,8 @@
 				$("#presentationcontainer2_counter").on("click", function() { presentation2.next(); });
 				$("#presentationcontainer2").on("click", function() { presentation2.next(); });
 				presentation2_counter.start();
-				presentation2.start();</pre>
+				presentation2.start();
+				$("#presentation2fullscreen").on("click", function() { presentation2.fullScreen($("#coupledpresentations")); });</pre>
 			<h3>2. Presentation with slide-indicator</h3>
 			<script>
 				$(window).load(function() {
