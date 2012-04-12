@@ -32,10 +32,21 @@ function Presenteer(canvas, elements, options) {
 	});
 	var currentIndex = -1;
 	var prevIndex = -1;
-	var fullScreenSupport = document.documentElement.requestFullScreen || document.documentElement.mozRequestFullScreen || document.documentElement.webkitRequestFullScreen;
+	var fullScreenSupport = document.documentElement.requestFullScreen || document.documentElement.mozRequestFullScreen || document.documentElement.webkitRequestFullScreen || document.documentElement.oRequestFullScreen;
 	var isFullScreen = false;
-	document.addEventListener("mozfullscreenchange", function() { if (typeof(mozFullScreenElement) == "undefined") { isFullScreen = false; }; setTimeout(function() { show(elements[currentIndex]); }, 10); });
-	document.addEventListener("webkitfullscreenchange", function() { if (typeof(webkitFullScreenElement) == "undefined") { isFullScreen = false; }; setTimeout(function() { show(elements[currentIndex]); }, 10); });
+	var realign = function() { setTimeout(function() { show(elements[currentIndex]); }, 10); }
+	document.addEventListener("mozfullscreenchange", function() { if (typeof(mozFullScreenElement) == "undefined") { isFullScreen = false; }; realign(); });
+	document.addEventListener("webkitfullscreenchange", function() { if (typeof(webkitFullScreenElement) == "undefined") { isFullScreen = false; }; realign(); });
+	document.addEventListener("ofullscreenchange", function() { if (typeof(oFullScreenElement) == "undefined") { isFullScreen = false; }; realign(); });
+	$(document).on("keyup", function(event) {
+		// On an escape, leave fullScreen
+		if (event.which == "27") {
+			cancelFullScreen();
+			realign();
+		}
+	});
+	var fullScreenElement;
+	var fullScreenBackupStyling;
 	
 	/*
 	* Options
@@ -320,23 +331,28 @@ function Presenteer(canvas, elements, options) {
     }
 	
 	function fullScreen(elm) {
+		if (typeof(elm) == "undefined") {
+			fullScreenElement = $(canvas).parent().get(0);
+		} else {
+			fullScreenElement = $(elm).get(0);
+		}
 		if (fullScreenSupport) {
-			if (typeof(elm) == "undefined") {
-				var elm = $(canvas).parent().get(0);
-			} else {
-				var elm = $(elm).get(0);
-			}
-			if (elm.requestFullScreen) {
-				elm.requestFullScreen();
-			} else if (elm.mozRequestFullScreen) {
-				elm.mozRequestFullScreen();
-				elm.mozfullscreenerror = function() { isFullScreen = false; return; }
-			} else if (elm.webkitRequestFullScreen) {  
-				elm.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+			if (fullScreenElement.requestFullScreen) {
+				fullScreenElement.requestFullScreen();
+			} else if (fullScreenElement.mozRequestFullScreen) {
+				fullScreenElement.mozRequestFullScreen();
+				fullScreenElement.mozfullscreenerror = function() { isFullScreen = false; return; }
+			} else if (fullScreenElement.webkitRequestFullScreen) {  
+				fullScreenElement.webkitRequestFullScreen(Element.ALLOW_KEYBOARD_INPUT);
+			} else if (fullScreenElement.oRequestFullScreen) {  
+				fullScreenElement.oRequestFullScreen();
 			}
 		} else {
-			// TODO: Fallback if there's no full-screen support
-			// Make parent full-width
+			// Set black background
+			$("body").append("<div id='presenteerjsfullscreenbackground' style='position: fixed; background: #000; left: 0px; top: 0px; right: 0px; bottom: 0px;'></div>");
+			// Set element to full-screen
+			fullScreenBackupStyling = $(fullScreenElement).attr("style");
+			$(fullScreenElement).attr("style", fullScreenBackupStyling + "; position: fixed; z-index: 1000; left: 0px; top: 0px; right: 0px; bottom: 0px;");
 		}
 		isFullScreen = true;
 	}
@@ -349,10 +365,14 @@ function Presenteer(canvas, elements, options) {
 			  document.mozCancelFullScreen();  
 			} else if (document.webkitCancelFullScreen) {  
 			  document.webkitCancelFullScreen();  
+			} else if (document.oCancelFullScreen) {  
+			  document.oCancelFullScreen();  
 			}
 		} else {
-			// TODO: Fallback if there's no full-screen support
-			// Make parent normal-width
+			// Remove black background
+			$("#presenteerjsfullscreenbackground").remove();
+			// Set element to normal style
+			$(fullScreenElement).attr("style", (fullScreenBackupStyling||""));
 		}
 		isFullScreen = false;
 	}
