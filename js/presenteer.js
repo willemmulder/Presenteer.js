@@ -140,17 +140,20 @@ function Presenteer(canvas, elements, options) {
 		// If canvas is smaller than its container, then center the canvas in its parent
 		if (options.centerVertically && (outerScrollHeight(canvas, options.showOriginalMargins) * canvasZoomFactor) < viewportHeight) {
 			// This does not work on Webkit for some reason. $(canvas).outerHeight() seems to always return 0
-			if (!$.browser.webkit) {
+			if (!$.browser.webkit && !$.browser.opera) {
 				newTop = (viewportHeight - (outerScrollHeight(canvas, options.showOriginalMargins) * canvasZoomFactor)) / 2;
 			}
 		}
 		if (options.centerHorizontally && (outerScrollWidth(canvas, options.showOriginalMargins) * canvasZoomFactor)  < viewportWidth) {
-			newLeft = (viewportWidth - (outerScrollWidth(canvas, options.showOriginalMargins) * canvasZoomFactor)) / 2;
+			// This does not work on Webkit for some reason. $(canvas).outerWidth() seems to always return 0
+			if (!$.browser.webkit && !$.browser.opera) {
+				//newLeft = (viewportWidth - (outerScrollWidth(canvas, options.showOriginalMargins) * canvasZoomFactor)) / 2;
+			}
 		}
 		
 		// Calculate new transform Origin
-		var transformOriginLeft = (baseLeft * 1 + (e.outerWidth() / 2)) + "px";
-		var transformOriginTop = (baseTop * 1 + (e.outerHeight() / 2)) + "px";
+		var transformOriginLeft = (Math.round((baseLeft * 1 + (e.outerWidth() / 2))*10000)/10000) + "px";
+		var transformOriginTop = (Math.round((baseTop * 1 + (e.outerHeight() / 2))*10000)/10000) + "px";
 		
 		// Set transformations back to how they were
 		setTransformation(canvas, transformationBackup);
@@ -169,7 +172,7 @@ function Presenteer(canvas, elements, options) {
 			setTransitions(e, transitionsElmBackup);
 			// Set canvas transformations to correct values
 			var inverseMatrix = (options.followElementTransforms ? processElementTransforms(e) : "");
-			var transform =  ' translate('+newLeft+'px,'+newTop+'px)  scale('+canvasZoomFactor+') ' + inverseMatrix;
+			var transform =  ' translate('+(Math.round(newLeft*10000)/10000)+'px,'+(Math.round(newTop*10000)/10000)+'px)  scale('+(Math.round(canvasZoomFactor*10000)/10000)+') ' + inverseMatrix;
 			setTransformOrigin(canvas, transformOriginLeft, transformOriginTop);
 			setTransformation(canvas,transform);
 		}, 1);

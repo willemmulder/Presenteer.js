@@ -2,6 +2,7 @@ Presenteer.js
 ============
 
 Presenteer.js is a flexible HTML5 presentation tool that uses CSS3 transforms and transitions to make smooth HTML presentations.  
+Works on Chrome, Firefox, Opera, Android, iPhone and IE9.  
 See http://willemmulder.github.com/Presenteer.js/ for demos and documentation.
 
 License
@@ -22,4 +23,4 @@ Trunk
 1.0  
 + Center vertically or horizontally in viewport  
 + Presentation follows element transforms  
-+ Works on Chrome, Firefox, Opera, Android, iPhone and IE9  
++ Work on Chrome, Firefox, Opera, Android, iPhone and IE9  
