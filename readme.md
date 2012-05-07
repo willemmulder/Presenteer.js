@@ -18,8 +18,9 @@ Version
 -----------------
 Trunk  
 + Slimmed down matrix libraries to 1 compact file  
-> todo Support intermediate steps  
-> todo Better examples  
++ Fullscreen support  
++ Better examples  
+todo Support intermediate steps  
 1.0  
 + Center vertically or horizontally in viewport  
 + Presentation follows element transforms  
