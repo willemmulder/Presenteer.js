@@ -135,7 +135,7 @@
 				<p>Then, on page load, create a Presenteer instances for every presentation on the page. For this example, we only have one presentation, so the below code suffices.</p>
 				<pre class="brush: js;">var presentation = new Presenteer(
 	"#presentation1", 
-	$("#presentationq > div"), 
+	$("#presentation1 > div"), 
 	{ followElementTransforms: false }
 );</pre>
 				<p>I set followElementTransforms to false to make Presenteer not follow element transforms. Only in that case, we don't need the Sylvester matrix library. If you <strong>do</strong> want Presenteer.js to follow element transforms (e.g. element rotations), also add the Sylvester library to your page</p>
