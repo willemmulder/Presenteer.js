@@ -16,12 +16,15 @@ Send me a message if you used Presenteer.js so we can feature you here.
 
 Version
 -----------------
-Trunk  
-+ Slimmed down matrix libraries to 1 compact file  
-+ Fullscreen support  
-+ Better examples  
-todo Support intermediate steps  
-1.0  
-+ Center vertically or horizontally in viewport  
-+ Presentation follows element transforms  
-+ Work on Chrome, Firefox, Opera, Android, iPhone and IE9  
+* Todo
+  * Better examples  
+  * Support intermediate steps  
+
+* Trunk  
+  + Slimmed down matrix libraries to 1 compact file  
+  + Fullscreen support  
+
+* 1.0  
+  + Center vertically or horizontally in viewport  
+  + Presentation follows element transforms  
+  + Work on Chrome, Firefox, Opera, Android, iPhone and IE9  
