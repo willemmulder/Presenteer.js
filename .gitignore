@@ -1,0 +1,10 @@
+*
+!js/
+!js/*
+!syntaxhighlighter/
+!syntaxhighlighter/*
+!examples/
+!examples/*
+!readme.md
+!index.html
+!.gitignore
