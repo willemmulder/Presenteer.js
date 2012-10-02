@@ -23,6 +23,7 @@ Version
 * Trunk  
   + Slimmed down matrix libraries to 1 compact file  
   + Fullscreen support  
+  + Screen-filling example  
 
 * 1.0  
   + Center vertically or horizontally in viewport  
