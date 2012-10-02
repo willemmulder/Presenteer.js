@@ -1,0 +1,639 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>Presenteer.js Presentation Template</title>
+	<link  type="text/css" href="css/fonts.css" rel="stylesheet" media="all" />
+	<link  type="text/css" href="css/style.css" rel="stylesheet" media="all" />
+	<script src="../../js/jquery-1.8.1.min.js"></script>
+	<script src="../../js/sylvester/sylvester.min.js"></script>
+	<script src="../../js/presenteer.js"></script>
+	<script src="js/presentation.js"></script>
+	<script src="js/betterexamples.js"></script>
+	<script src="js/esprima.js"></script>
+	<script>
+		$(function() {
+			example = new BetterExample(".codeinput", ".codeoutput", {id:"codeexample"});
+		});
+	</script>
+</head>
+<body>
+	<div class='presentationcontainer'>
+		<div class="livecodingarea">
+			<div class='input'>
+				<div class='triggers'>
+					<div class="trigger" onclick='runhtmlandcode();'>
+						&gt; &gt;
+					</div>
+					<div class="trigger" onclick='runcode();'>
+						&gt;
+					</div>
+					<div class="trigger" onclick='hideeditor();'>
+						-
+					</div>
+				</div>
+				<label>Code</label>
+				<div class='code'>
+					<pre class='codeinput'>
+$("#button1").on('click', function() {
+	alert('jo');
+});
+					</pre>
+					<div class='codeoutput'></div>
+				</div>
+				<label>HTML</label>
+				<textarea class='html'>
+<div id='div1'>
+	div1
+</div>
+<button id='button1'>
+	button1
+</button>
+</textarea>
+			</div>
+			<div class='result'>
+				<label>Resultaat</label>
+				<div class='html'>
+					
+				</div>
+			</div>
+		</div>
+		<div class="top">
+			<img src="images/Logo.png"/>
+		</div>
+		<div class="triggers">
+			<div class="trigger" onclick='overview();'>
+				...
+			</div>
+			<div class="trigger" onclick='maximise();'>
+				+
+			</div>
+			<div class="trigger" onclick='showeditor();'>
+				&lt;/&gt;
+			</div>
+		</div>
+		<div class="presentationviewport">
+			<div class="presentationcanvas">
+				<div id='html5' style='text-align: center;'>
+					<img src='images/HTML5_Logo.svg' style='width: 400px; margin-top: 100px;'>
+					</img>
+					<p class='button pull-right' onclick='presentation.next();'>
+						Start
+					</p>
+				</div>
+				<div data-presenteerid="start">
+					<h1>
+						Willem Mulder
+					</h1>
+					<p>
+						Consultant
+					</p>
+					<ul>
+						<li><a href='https://twitter.com/WillemMulder'>https://twitter.com/WillemMulder</a></li>
+						<li><a href='https://github.com/WillemMulder'>https://github.com/WillemMulder</a></li>
+						<li><a href='http://linkedin.com/in/WillemM'>http://linkedin.com/in/WillemM</a></li>
+						<li><a href='https://plus.google.com/101518526525418328696'>https://plus.google.com/101518526525418328696</a></li>
+					</ul>
+					<p>
+						Nieuwe dingen + groot bereik + grote impact = top!
+					</p>
+					
+				</div>
+				<div id='overzicht'>
+					<h1>
+						Overzicht
+					</h1>
+					<!--<img class='pull-right' src='images/HTML5_Logo.svg' style='width: 300px; margin-top: -70px;'>
+					</img>-->
+					<ul>
+						<li><a href='#' onclick='presentation.show("geschiedenis"); return false;'>Geschiedenis</a> (10 min)</li>
+						<li><a href='#' onclick='presentation.show("HTML5"); return false;'>Wat is HTML5</a> (5 min)</li>
+						<li><a href='#' onclick='presentation.show("demos"); return false;'>Demo's HTML5</a> (50 min)</li>
+						<li><a href='#' onclick='presentation.show("gebruik"); return false;'>Praktische toepassingen HTML5</a> (5 min)</li>
+						<li><a href='#' onclick='presentation.show("mobiel"); return false;'>HTML5 & mobiel</a> (5 min)</li>
+						<li><a href='#' onclick='presentation.show("toekomst"); return false;'>Toekomst HTML5</a> (5 min)</li>
+						<li><a href='#' onclick='presentation.show("vragen"); return false;'>Vragen</a> (10 min)</li>
+					</ul>
+				</div>
+				<div id="geschiedenis">
+					<h1>
+						Geschiedenis
+					</h1>
+					<ul>
+						<li>Standalone desktop-applicatie</li>
+						<li>Applicatie met online verbindingen</li>
+						<li>Problemen<ul>
+							<li>Hoe update je je applicatie?</li>
+							<li>Hoe distribueer je je applicatie? Bereik?</li>
+							<li>Hoe maak je de koppeling vanuit het internet?</li>
+						</ul></li>
+						<li>Simpel: door je applicatie ook op het web te bouwen!</li>
+						<li>Voor veel zaken nog propriëtaire oplossingen (Flash ed)</li>
+						<li>Steeds meer standaardisatie en openheid, geleid door werkrgroepen, browsermakers en... Apple</li>
+					</ul>
+				</div>
+				<div id="HTML5">
+					<h1>
+						Wat is HTML5?
+					</h1>
+					<p>
+					&nbsp
+					</p>
+					<ul>
+						<li>HTML5 elementen</li>
+						<li>CSS3 styling</li>
+						<li>Javascript <div class='popover'>
+							<ul>
+								<li>Webworkers</li>
+								<li>Websockets</li>
+								<li>Offline storage</li>
+								<li>History API</li>
+								<li>Drag&Drop</li>
+								<li>XHR File upload</li>
+								<li>GeoLocation</li>
+								<li>ContentEditable</li>
+								<li>Muis lock</li>
+								<li>Volledig scherm</li>
+								<li>Cross-document berichten</li>
+								<li>Web Audio</li>
+							</ul>
+						</li>
+						<li>SVG, Canvas 2D & 3D</li>
+					</ul>
+					<p>
+						======================= <strong>+</strong><br />
+					</p>
+					<img src='images/minilogo.png' style='margin-top: 20px;'></img>
+					</ul>
+					<p>
+					&nbsp
+					</p>
+					<p>
+						En wat ondersteunt jouw browser precies? <a href='http://beta.html5test.com/'>http://beta.html5test.com/</a><br />
+						En welke features kan ik gebruiken? <a href='http://html5please.com/'>HTML5 Please</a><br />
+						En wat is de exacte browseroondersteuning? <a href='http://caniuse.com'>CanIUse.com</a>
+					</p>
+				</div>		
+				<div id="demos">
+					<h1>
+						Demo's!
+					</h1>
+					<div>
+						Het laatste en beste van HTML5
+					</div>
+					<ul>
+						<li>HTML5 elementen</li>
+						<li>CSS3</li>
+						<li>Javascript</li>
+						<li>SVG</li>
+						<li>Canvas 2D</li>
+						<li>Canvas 3D</li>
+				</div>		
+				<div id='form'>
+					<h1>
+						HTML5 elementen
+					</h1>
+					<h2>
+						Nieuwe form elementen
+					</h2>
+					<div class='block'>
+						<form onsubmit='alert("lukt!"); return false;'>
+							<div class='pull-left halfwidth'>
+								<label>Normale input, verplicht veld</label>
+								<input required='true' />
+								<label>Datum veld</label>
+								<input type='date'>
+								<label>Range veld</label>
+								<input type="range" value="50" min=10 max=75>
+							</div>
+							<div class='pull-left halfwidth'>
+								<label>Nummer veld</label>
+								<input type='number'>
+								<label>Email veld</label>
+								<input type='email'>
+								<label>Bestanden<div class='popover'><a href='http://creativejs.com/tutorials/advanced-uploading-techniques-part-1/'>File API met Slicing en Ajax upload</a></div></label>
+								<input type='file' multiple='multiple'>
+								<input type='submit' />
+							</div>
+							<div class='clearfix'>.</div>
+						</form>
+					</div>
+					<p>
+						je kan <code>autofocus='true'</code> gebruiken voor autofocus
+					</p>
+				</div>		
+				<div id='semantisch'>
+					<h1>
+						HTML5 elementen
+					</h1>
+					<h2>
+						Semantische elementen
+					</h2>
+					<div>
+						<ul>
+							<li>header</li>
+							<li>nav</li>
+							<li>section</li>
+							<li>article</li>
+							<li>aside</li>
+							<li>details</li>
+							<li>dialog</li>
+							<li>transcript</li>
+							<li>footer</li>
+							<li>hgroup</li>
+							<li>microdata <div class='popover'><a href='#' onclick='showeditor(null,$(this).nextAll(".examplecode").html()); return false;'>voorbeeld</a>
+<div class='examplecode'><section itemscope itemtype="http://data-vocabulary.org/Person"> 
+	Hello, my name is 
+	<span itemprop="name">John Doe</span>, 
+	I am a 
+	<span itemprop="title">assistant</span> 
+	at the 
+	<span itemprop="affiliation">University of Dreams</span>. 
+	My friends call me 
+	<span itemprop="nickname">Johnny</span>. 
+	visit <a href="http://www.JohnnyD.com" itemprop="url">www.JohnnyD.com</a>. 
+	<section itemprop="address" itemscope itemtype="http://data-vocabulary.org/Address">
+			I live at 
+			<span itemprop="street-address">1234 Peach Drive</span> 
+			<span itemprop="locality">Warner Robins</span>
+			, 
+			<span itemprop="region">Georgia</span>.
+	</section>
+</section>
+</div>
+					</div></li>
+						</ul>
+					</div>
+				</div>		
+				<div id='functioneel'>
+					<h1>
+						HTML5 elementen
+					</h1>
+					<h2>
+						'Semantisch functionele' elementen <div class='popover'><a href='#' onclick='showeditor(null,$(this).nextAll(".examplecode").html()); return false;'>voorbeeld</a>
+<div class='examplecode'><p>
+	wat <mark>gemarkeerde</mark> tekst
+</p>
+<p>
+	<form oninput="x.value=parseInt(a.value)+parseInt(b.value)">0
+	  <input type="range" name="a" value="50" />100
+	  +<input type="number" name="b" value="50" />
+	  =<output name="x" for="a b"></output>
+	</form>
+</p>
+<p>
+	Je score is een <meter min=0 low=55 high=80 max=100 optimum=100 value=65></meter> 6,5!
+</p>
+<p>
+	<progress max=150 value=24>24</meter>
+</p>
+<p>
+	<audio controls="controls">
+	  <source src="iets.ogg" type="audio/ogg" />
+	  <source src="iets.mp3" type="audio/mpeg" />
+	  Je browser ondersteunt het audio element niet
+	</audio>
+</p>
+<p>
+	<time datetime="1986-11-11" pubdate="pubdate">11 november 1986</time>
+</p></div></div>
+					</h2>
+					<div>
+						<ul>
+							<li>output</li>
+							<li>mark (gemarkeerde tekst)</li>
+							<li>time</li>
+							<li>video <div class='popover'><a href='http://craftymind.com/factory/html5video/CanvasVideo.html'>Big Buck Bunny</a></div></li>
+							<li>audio <div class='popover'><a href='http://html5doctor.com/native-audio-in-the-browser/'>Web audio introductie</a></div></li>
+							<li>source (gebruikt in video en audio)</li>
+						</ul>
+						<p>En de klappers</p>
+						<ul>
+							<li>SVG</li>
+							<li>Canvas</li>
+						</ul>
+						<p>Maar daar gaan we het straks nog over hebben...</p>
+					</div>
+					<p>
+						Zie <a href='http://www.html-site.nl/downloads/html5.pdf'>http://www.html-site.nl/downloads/html5.pdf</a> voor een volledig overzicht
+					</p>
+				</div>	
+				<div id="CSS">
+					<h1>
+						CSS3
+					</h1>
+					<div>Heleboel nieuwe CSS zaken, maar een aantal leuke zijn <div class='popover'><a href='#' onclick='showeditor(null,$(this).nextAll(".examplecode").html()); return false;'>voorbeeld</a>
+<div class='examplecode'><div class='block' style='border-radius: 10px;'>
+border-radius
+</div>
+<div class='block' style='box-shadow: 0px 0px 10px #22ff00;'>
+box-shadow
+</div>
+<div class='block' style='border: 10px solid rgba(144,205,0,0.2)'>
+RGBA kleuren
+</div>
+<div class='block' style='text-shadow: 0px 0px 5px #aaa;'>
+text-shadow
+</div>
+<div class='block'>
+	<div style='width: 100%; padding-right: 40px; background: #44dd00; box-sizing: border-box;'>
+	box-sizing=border-box
+	</div>
+	<div style='width: 100%; padding-right: 40px; background: #22ff00; box-sizing: content-box;'>
+	box-sizing=content-box
+	</div>
+</div>
+<div class='block' style='resize:horizontal;overflow: auto;'>
+resize horizontal met een vrij lange zin
+</div>
+</div></div></div>
+					<ul>
+						<li>border-radius</li>
+						<li>box-shadow</li>
+						<li>RGBA kleuren</li>
+						<li>text-shadow</li>
+						<li>box-sizing</li>
+						<li>resize</li>
+					</ul>
+					<div>En vooral <div class='popover'><a href='#' onclick='showeditor(null,$(this).nextAll(".examplecode").html()); return false;'>voorbeeld</a>
+<div class='examplecode'><sstyle>
+    .block { -webkit-transition: all 1s ease; }
+    .block:hover { border-radius: 0px !important; -webkit-transform: rotateX(180deg) !important; }
+</sstyle>
+<div class='block' style='border-radius: 10px;'>
+transforms
+</div>
+<div class='block' style='box-shadow: 0px 0px 10px #22ff00; border-radius: 20px; -webkit-transform: scale(0.5);'>
+scale 0.5
+</div>
+<div class='block' style='box-shadow: 0px 0px 10px #22ff00; border-radius: 20px; -webkit-transform: rotateY(40deg);'>
+rotateY
+</div>
+<div class='block' style='box-shadow: 0px 0px 10px #22ff00; border-radius: 20px; -webkit-transform: rotateZ(40deg);'>
+rotateZ
+</div>
+<div class='block' style='box-shadow: 0px 0px 10px #22ff00; border-radius: 20px; -webkit-transform: rotateX(40deg);'>
+rotateX
+</div>
+</div></div></div>
+					<ul>
+						<li>transforms<div class='popover'><a href='http://www.eleqtriq.com/2010/05/css-3d-matrix-transformations/'>Matrix transformaties</a></div></li>
+						<li>transitions<div class='popover'><a href='http://tympanus.net/Development/BookBlock/index.html'>Flipbook</a></div></li>
+					</ul>
+				</div>		
+				<div id='javascript'>
+					<h1>
+						Javascript <div class='popover'><a href='#' onclick='showeditor($(this).nextAll(".examplecode").html(),$(this).nextAll(".examplehtml").html()); return false;'>voorbeeld</a>
+<div class='examplecode'>
+var counter = 0;
+function push() {
+	counter++;
+	window.history.pushState(
+		"state_"+counter, 
+		"titel_"+counter, 
+		"#nummer"+counter
+	);	
+}
+$("button#push").on("click", function() { push(); });
+$(window).on("popstate", function(event) {
+	alert(event.originalEvent.state);
+});
+</div>
+<div class='examplehtml'>
+<button id='push'>pushState</button>
+</div>
+</div>
+					</h1>
+					<ul>
+						<li>Webworkers</li>
+						<li>Websockets <div class='popover'><a href='http://sharejs.org/'>http://sharejs.org/</a></li>
+						<li>Offline storage <div class='popover'><a href='http://www.html5rocks.com/en/tutorials/offline/storage/'>HTML5Rocks Offline Storage</a><br />
+						<a href='http://www.html5rocks.com/en/tutorials/indexeddb/todo/'>HTML5Rocks IndexedDB ToDoList voorbeeld</a></li>
+						<li>History API</li>
+						<li>Drag&Drop <div class='popover'><a href='#' onclick='showeditor($(this).nextAll(".examplecode").html(),$(this).nextAll(".examplehtml").html()); return false;'>voorbeeld</a>
+<div class='examplecode'>
+var holder = $(".holder").get(0);
+// dragstart,dragenter,dragover,drag,drop,dragend
+holder.ondragover = function () { $(this).css("background", "#aaa"); return false; };
+holder.ondragleave = function () { $(this).css("background", "#eee"); return false; };
+holder.ondragend = function () { $(this).css("background", "#eee"); return false; };
+holder.ondrop = function (e) {
+  e.stopPropagation();
+  e.preventDefault();
+  var file = e.dataTransfer.files[0],
+  reader = new FileReader();
+  reader.onload = function (event) {
+	var img = $("<img>").attr("src", event.target.result).css("width", "100%");
+	$(holder).append(img);
+  };
+  reader.readAsDataURL(file);
+  return false;
+};
+</div>
+<div class='examplehtml'>
+<div class='holder block'>
+	Drop je afbeelding hier
+</div>
+</div><br />
+<a href='https://developer.mozilla.org/en-US/docs/DragDrop/Drag_and_Drop'>MDN docs</a>
+</div>
+</li>
+						<li>XHR File upload</li>
+						<li>GeoLocation</li>
+						<li>ContentEditable <div class='popover'><a href='#' onclick='showeditor($(this).nextAll(".examplecode").html(),$(this).nextAll(".examplehtml").html()); return false;'>voorbeeld</a>
+<div class='examplecode'>
+</div>
+<div class='examplehtml'>
+<div class='block' contentEditable="true">
+	Tekst die je kan wijzigen. Ook lijsten 
+	<ul>
+		<li>werken</li>
+		<li>oké</li>
+	</ul>
+</div>
+</div>
+</div></li>
+						<li>Muis lock</li>
+						<li>Volledig scherm</li>
+						<li>Cross-document berichten</li>
+						<li>Web Audio <div class='popover'><a href='http://www.html5rocks.com/en/tutorials/webaudio/intro/'>Web Audio Introductie</a><br />
+						<a href='http://labs.dinahmoe.com/ToneCraft/'>ToneCraft</a></li>
+					</ul>
+				</div>		
+				<div id="SVG">
+					<h1>
+						SVG
+					</h1>
+					<p>
+						Afbeeldingen door middel van HTML elementen. Deze elementen kunnen dus ook gewoon gebeurtenissen afvangen!
+					</p>
+					<svg width="600" height="600">
+						<g
+							 inkscape:label="Laag 1"
+							 inkscape:groupmode="layer"
+							 id="layer1"
+							 transform="translate(0,-652.36218)">
+							<text
+							   xml:space="preserve"
+							   style="font-size:104.31484222px;font-style:normal;font-weight:normal;line-height:125%;letter-spacing:0px;word-spacing:0px;fill:#000000;fill-opacity:1;stroke:none;font-family:Sans"
+							   x="44.241165"
+							   y="744.99561"
+							   id="text2985"
+							   sodipodi:linespacing="125%"><tspan
+								 sodipodi:role="line"
+								 id="tspan2987"
+								 x="44.241165"
+								 y="744.99561"
+								 style="font-style:normal;font-variant:normal;font-weight:normal;font-stretch:normal;font-family:Serif;-inkscape-font-specification:Serif">Willem</tspan></text>
+							<path
+							   style="fill:none;stroke:#000000;stroke-width:5.45050669px;stroke-linecap:butt;stroke-linejoin:miter;stroke-opacity:1"
+							   d="m 40.528209,848.29867 c 0,0 -35.422635,150.54627 59.775701,119.55142 95.19832,-30.99485 -6.64174,-205.8941 137.2627,-123.97941 143.90446,81.91512 132.83488,148.33227 132.83488,148.33227"
+							   id="path2989"
+							   inkscape:connector-curvature="0" />
+							<path
+							   sodipodi:type="arc"
+							   style="fill:#000000;fill-opacity:1;stroke:none"
+							   id="path2991"
+							   sodipodi:cx="68.239098"
+							   sodipodi:cy="80.096931"
+							   sodipodi:rx="2.8432956"
+							   sodipodi:ry="2.8432956"
+							   d="m 71.082393,80.096931 a 2.8432956,2.8432956 0 1 1 -5.686591,0 2.8432956,2.8432956 0 1 1 5.686591,0 z"
+							   transform="matrix(5.4505069,0,0,5.4505069,-65.739697,573.34556)" />
+							<path
+							   style="fill:#000000;fill-opacity:1;stroke:none"
+							   d="m 277.55375,1009.9144 c 0,8.5591 -6.93843,23.9363 -15.4974,23.9363 -8.55898,0 -15.49741,-15.3772 -15.49741,-23.9363 0,-8.5589 6.93843,-15.49736 15.49741,-15.49736 8.55897,0 15.4974,6.93846 15.4974,15.49736 z"
+							   id="path3761"
+							   inkscape:connector-curvature="0"
+							   sodipodi:nodetypes="sssss" />
+						  </g>
+					</svg>
+					<script>
+						$(function() {
+							$("#path3761").hover(function() { $(this).css("fill", "#eeee00"); }, function() { $(this).css("fill", "#000000"); });
+							$("#path2991").hover(function() { $(this).css("stroke", "#eeee00").css("stroke-width", "2px"); }, function() { $(this).css("stroke", "none").css("stroke-width", "0px"); });
+						});
+					</script>
+				</div>	
+				<div id="Canvas 2D">
+					<h1>
+						Canvas 2D
+					</h1>
+					<h2>
+						Ook wel gewoon 'canvas' <div class='popover'><a href='#' onclick='showeditor($(this).nextAll(".examplecode").html(),$(this).nextAll(".examplehtml").html()); return false;'>voorbeeld</a>
+<div class='examplecode'>
+var canvas = $('#somecanvas')[0];
+    
+var ctx = canvas.getContext('2d');
+ctx.clearRect(0, 0, 400, 400);
+
+function draw(color,rx,ry) {
+	// Centrisch verloop
+	rx = rx || 0;
+	ry = ry || 0;
+	grad = ctx.createRadialGradient(rx,ry,0,rx,ry,200); 
+	grad.addColorStop(0, '#000');
+	grad.addColorStop(1, 'rgb(' + color + ', ' + color + ', ' + 0 + ')');
+
+	// assign gradients to fill
+	ctx.fillStyle = grad;
+
+	// draw 200x200 fill
+	ctx.fillRect(0,0,400,400);
+}
+
+$(canvas).on("mousemove", function(event) {
+	var x = event.pageX - $(canvas).offset().left;
+	var y = event.pageY - $(canvas).offset().top;
+	draw(Math.round(y), x+1, y+1);
+});
+</div>
+<div class='examplehtml'>
+<canvas id='somecanvas' style='width: 400px; height: 400px;'></canvas>
+</div>
+</div>
+					</h2>
+					<p>
+						<li><a href='http://physicsketch.appspot.com/'>http://physicsketch.appspot.com/</a></li>
+						<li><a href='http://mudcu.be/sketchpad/'>http://mudcu.be/sketchpad/</a></li>
+						<li><a href='http://diagramo.com/editor/editor.php'>http://diagramo.com/editor/editor.php UML editor</a></li>
+						<li><a href='http://weavesilk.com/'>http://weavesilk.com/</a></li>
+						<li><a href='http://spielzeugz.de/html5/liquid-particles.html'>http://spielzeugz.de/html5/liquid-particles.html deeltjes interactie</a></li>
+						<li><a href='http://www.cuttherope.ie/'>http://www.cuttherope.ie/</a></li>
+						<li><a href='http://muro.deviantart.com/'>http://muro.deviantart.com/ tekenprogramma</a></li>
+						<li><a href='http://chrome.angrybirds.com/'>http://chrome.angrybirds.com/</a></li>
+						<li><a href='http://www.webmonkey.com/2011/08/make-waves-with-webgl-demo-water/'>http://www.webmonkey.com/2011/08/make-waves-with-webgl-demo-water/ water demo</a></li>
+						<li><a href='http://9elements.com/io/projects/html5/canvas/'>http://9elements.com/io/projects/html5/canvas/ cirkels in kleur</a></li>
+					</p>
+				</div>
+				<div id="Canvas 3D">
+					<h1>
+						Canvas 3D
+					</h1>
+					<h2>
+						Ook wel 'WebGL'
+					</h2>
+					<ul>
+						<li><a href='http://notlion.github.com/streetview-stereographic/#o=0,0,0,1&z=1.535&p=36.86184,-5.17948'>Streetview Stereografisch</a></li>
+						<li><a href='http://www.andrew-hoyer.com/experiments/cloth'>Kleding experiment</a></li>
+						<li><a href='http://mrdoob.github.com/three.js/examples/webgl_marching_cubes.html'>Lava</a></li>
+						<li><a href='http://triggerrally.com/'>Trigger Rally</a></li>
+						<li><a href='http://mrdoob.github.com/three.js/examples/webgl_terrain_dynamic.html'>Vogels op terrein</a></li>
+						<li><a href='http://helloracer.com/webgl/'>Hello Racer</a></li>
+					</ul>
+				</div>
+				<div id='praktisch'>
+					<h1>
+						Praktische toepassingen HTML5
+					</h1>
+					<ul>
+						<li>HTML: Forms</li>
+						<li>HTML: Zoekmachines</li>
+						<li>CSS3: Grafische aankleding, snelheid</li>
+						<li>Javascript: Front-end los van de achterkant, offline</li>
+						<li>Javascript: Realtime communicatie</li>
+						<li>Javascript: Integratie met apparaat</li>
+						<li>SVG: Grafieken</li>
+						<li>Canvas: Grafische effecten, Tekencanvas, Spelletjes</li>
+					</ul>
+				</div>
+				<div id='mobiel'>
+					<h1>
+						HTML5 & Mobiel
+					</h1>
+					<ul>
+						<li>Responsive design</li>
+						<li>Phonegap</li>
+					</ul>
+				</div>
+				<div id='toekomst'>
+					<h1>
+						Toekomst HTML5
+					</h1>
+					<ul>
+						<li>WebRTC</li>
+						<li>Sandboxing / code bescherming</li>
+						<li>En wat gebruikers dan ook willen hebben...</li>
+					</ul>
+				</div>
+				<div id='vragen'>
+					<h1>
+						Vragen & discussie
+					</h1>
+					<h2>...</h2>
+				</div>
+			</div>
+			
+		</div>
+		<div class='bottom'>
+			<div class='progressnumber'>
+				
+			</div>
+			<div class='progressbar'>
+				<div class='progressbarindicator'>
+					
+				</div>
+			</div>
+		</div>
+	</div>
+</body>
+</html>

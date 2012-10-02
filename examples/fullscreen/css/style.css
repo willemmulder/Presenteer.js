@@ -1,0 +1,274 @@
+
+	body, html { font: 24px 'Source Sans Pro', verdana, sans-serif; letter-spacing: 0.5px; margin: 0px; padding: 0px; color: rgb(0,155,205); background: #fff; overflow: hidden; }
+	h1, h2, h3, h4 { color: rgb(0,71,140); letter-spacing: 0px; font-size: 60px; margin: 0px; }
+	h2 { font-size: 30px; margin-top: 10px; }
+	p { margin: 0px; margin-top: 20px; padding: 0px; }
+	a { text-decoration: none; border: none; }
+	* { 
+		-webkit-box-sizing: border-box;
+		-moz-box-sizing: border-box;
+		box-sizing: border-box;
+		-webkit-touch-callout: none; /* Don't show a callout when user long-taps on a link */
+		-webkit-tap-highlight-color: rgba(255,255,255,0); /* Disable the ugly tap highlighting */
+	}
+
+	html,body { height: 100%; width: 100%; }
+	
+	.livecodingarea {
+		position: absolute;
+		display: none;
+		z-index: 100;
+		background: #fff;
+		left: 0px;
+		top: 0px;
+		right: 0px;
+		bottom: 0px;
+	}
+	
+		.livecodingarea .triggers {
+			position: relative;
+			top: 0px;
+			left: 0px;
+			width: 100%;
+			height: 60px;
+		}
+		
+			.livecodingarea .triggers .trigger {
+				float: left;
+			}
+		
+		.livecodingarea .input {
+			width: 75%;
+			height: 100%;
+			float: left;
+			overflow: hidden;
+		}
+		
+			.codeinput, .codeoutput { float: left; width: 50%; height: 300px; position: relative; padding: 0px; margin: 0px; font-family: monospace; overflow: visible; }
+			.codeinput *, .codeoutput * { font-size: 20px; }
+			.codeoutput { padding-left: 10px; display: none; }
+			.codeinput { width: 100%; }
+		
+		.livecodingarea .input .code, .livecodingarea .input .html {
+			border: 1px solid #aaa;
+			width: 100%;
+			height: 300px;
+			overflow: auto;
+			font-size: 20px;
+		}
+		
+		.livecodingarea .result {
+			width: 25%;
+			height: 100%;
+			float: right;
+			padding: 20px;
+		}
+	
+	.presentationcontainer { 
+		width: 1200px;
+		height: 800px;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		margin-left: -600px;
+		margin-top: -400px;
+		padding: 200px;
+	}
+	
+	.top {
+		position: absolute; 
+		top: 0px;
+		left: 0px;
+		width: 1200px;
+		height: 200px;
+	}
+	
+		.top img { margin-left: 300px; margin-top: 40px; width: 600px; }
+	
+	.triggers {
+		position: absolute; 
+		width: 60px;
+		top: 250px;
+		left: 900px;
+	}
+	
+		.trigger {
+			width: 50px;
+			height: 50px;
+			background: #eee;
+			text-align: center;
+			line-height: 50px;
+			cursor: pointer;
+			margin-bottom: 10px;
+			margin-right: 10px;
+		}
+	
+	.overview {
+		padding: 40px;
+		width: 120%; /* to hide the scrollbars but still allow for scrolling */
+		height: 100%;
+		overflow: auto;
+	}
+	
+		.overviewelement {
+			float: left; 
+			width: 200px; height: 200px;
+			margin: 40px;
+			padding: 20px;
+			background: #fff;
+			border: 5px solid rgb(0,155,205);
+			cursor: pointer;
+			text-align: center;
+			background: #fcfcfc;
+			overflow: hidden;
+		}
+		
+			.overviewelement h2 {
+				margin: 0px;
+				font-size: 50px;
+			}
+		
+			.overviewelement.active {
+				border: 5px solid rgb(0,71,140);
+			}
+			
+			.overviewelement:hover {
+				background: #eee;
+			}
+	
+	.presentationviewport {
+		background: #fff;
+		box-shadow: 0px 0px 5px #333;
+		width: 1200px;
+		height: 800px;
+		position: absolute;
+		left: 50%;
+		top: 50%;
+		margin-left: -600px;
+		margin-top: -400px;
+		overflow: hidden;
+		-moz-transition: all 0.7s ease; 
+		-webkit-transition: all 0.7s ease; 
+		-o-transition: all 0.7s ease; 
+		-ms-transition: all 0.7s ease;
+		transition: all 0.7s ease; 
+		-webkit-backface-visibility : hidden;
+		-webkit-perspective: hidden; /* suppress flicker */
+		-webkit-transform: translateZ(0); /* make animation GPU accelerated by applying -webkit-transform: translateZ(0); */
+	}
+	
+		.presentationcanvas {
+			width: 1000000px;
+			height: 800px;
+			-webkit-backface-visibility : hidden; /* OR NOT? */
+		}
+		
+		.presentationcanvas > div {
+			width: 1200px;
+			height: 800px;
+			float: left;
+			padding: 100px;
+		}
+		
+		.examplecode, .examplehtml { display: none; }
+		
+		*:hover > .popover {
+			display: block;
+			height: auto;
+		}
+		
+		.popover {
+			position: absolute;
+			background: #fff;
+			box-shadow: 0px 0px 5px #555;
+			padding: 20px;
+			display: none;
+		}
+		
+	.bottom {
+		position: absolute; 
+		bottom: 0px;
+		left: 0px;
+		width: 1200px;
+		height: 100px;
+	}
+	
+		.bottom .progressnumber {
+			position: absolute;
+			text-align: right;
+			width: 1200px;
+			left: 0px;
+			top: 0px;
+			font-size: 40px;
+		}
+	
+		.bottom .progressbar {
+			position: absolute;
+			left: 0px;
+			top: 50px;
+			border-radius: 10px;
+			height: 20px;
+			width: 1200px;
+			background: #eee;
+		}
+		
+		.bottom .progressbarindicator {
+			position: absolute;
+			left: 0px;
+			top: 0px;
+			border-radius: 10px;
+			height: 20px;
+			width: 40px;
+			background: #ccc;
+			text-align: center;
+			line-height: 20px;
+			font-size: 14px;
+			-moz-transition: all 0.7s ease; 
+			-webkit-transition: all 0.7s ease; 
+			-o-transition: all 0.7s ease; 
+			-ms-transition: all 0.7s ease;
+			transition: all 0.7s ease; 
+		}
+		
+	.button {
+		background: rgb(0,71,140);
+		color: #fff;
+		border-radius: 5px;
+		line-height: 1em;
+		padding: 5px;
+		cursor: pointer;
+	}
+	
+	.halfwidth {
+		width: 50%;
+	}
+	
+	.pull-right {
+		float: right;
+	}
+	
+	.pull-left {
+		float: left;
+	}
+	
+	.pull-bottom {
+		position: absolute;
+		bottom: 100px;
+	}
+	
+	label {
+		margin-top: 20px;
+		display: block;
+	}
+	
+	.block {
+		margin-top: 20px;
+		background: #fafafa;
+		padding: 20px;
+	}
+	
+	.block :first-child {
+		margin: 0px;
+	}
+
+	.clearfix { visibility: hidden; font-size: 1px; clear:both; }
