@@ -12,7 +12,7 @@
 	//----------------------
 	// Main Presenteer constructor function
 	//----------------------
-	window.Presenteer = function(canvas, elements, options) {
+	window.Presenteer = function(canvas, elementsArgument, options) {
 		/*
 		* Initialize
 		*/
@@ -23,23 +23,7 @@
 		// Set transform-origin to top-left
 		setTransformOrigin(canvas, 0, 0);
 		var canvasZoomFactor = 1;
-		if (typeof elements == "string") {
-			elements = $(elements);
-		}
-		var originalElements = elements;
-		var elements = []; // Array of elements to show, in order
-		$.each(originalElements, function(index,element) {
-			if (element.nodeType == 1) { 
-				// Element is a raw HTML element. We build our 'own' element which references the raw HTML element
-				elements.push({ "element" : $(element) });
-			} else if (typeof(element) == "string") {
-				// Element is a selector. We build our 'own' element, referencing the selected element
-				elements.push({ "element" : $(element) });
-			} else { 
-				// We assume that element is an object that is already in 'our' style (see below)
-				elements.push(element);
-			}
-		});
+		elements = getElements(elementsArgument);
 		var currentIndex = -1;
 		var prevIndex = -1;
 		var fullScreenSupport = document.documentElement.requestFullScreen || document.documentElement.mozRequestFullScreen || document.documentElement.webkitRequestFullScreen || document.documentElement.oRequestFullScreen;
@@ -95,8 +79,12 @@
 		}
 		
 		// If cacheLocations is set to true, we calculate the position of every slide only once and then cache it
-		// This prevents flicker, makes for a smoother animation nd saves CPU
+		// This prevents flicker, makes for a smoother animation and saves CPU
 		if (options.cachePositions) {
+			cachePositions();
+		}
+
+		function cachePositions() {
 			// Disable all transformations on all elements with a special class
 			disableAllTransitions();
 			disableAllTransformations();
@@ -108,6 +96,26 @@
 			}
 			undoDisableAllTransformations();
 			undoDisableAllTransitions();
+		}
+
+		function getElements(elementsArgument) {
+			if (typeof elementsArgument == "string") {
+				elementsArgument = $(elementsArgument);
+			}
+			var elements = []; // Array of elements to show, in order
+			$.each(elementsArgument, function(index,element) {
+				if (element.nodeType == 1) { 
+					// Element is a raw HTML element. We build our 'own' element which references the raw HTML element
+					elements.push({ "element" : $(element) });
+				} else if (typeof(element) == "string") {
+					// Element is a selector. We build our 'own' element, referencing the selected element
+					elements.push({ "element" : $(element) });
+				} else { 
+					// We assume that element is an object that is already in 'our' style (see below)
+					elements.push(element);
+				}
+			});	
+			return elements;
 		}
 		
 		/*
@@ -236,7 +244,7 @@
 					var foundid;
 					for(var i in elements) {
 						var element = elements[i].element;
-						if ($(element).data("presenteerid") == index) {
+						if ($(element).is(index) || $(element).data("presenteerid") == index) {
 							prevIndex = currentIndex;
 							currentIndex = i;
 							foundid = undefined;
@@ -245,6 +253,7 @@
 							foundid = i;
 						}
 					}
+					// Only use the raw id if no element was found by direct comparison or presenteerid
 					if (typeof foundid != 'undefined') {
 						prevIndex = currentIndex;
 						currentIndex = foundid;
@@ -361,6 +370,12 @@
 			},
 			isFullScreen : function() {
 				return isFullScreen;
+			},
+			update : function() {
+				elements = getElements(elementsArgument);
+				if (options.cachePositions) {
+					cachePositions();
+				}
 			}
 			
 		};
