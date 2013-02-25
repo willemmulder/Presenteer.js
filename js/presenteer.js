@@ -376,8 +376,28 @@
 				if (options.cachePositions) {
 					cachePositions();
 				}
+			},
+			getPositionAtCanvas : function(opts) {
+				if (opts.positionInViewport) {
+					// Multiply the position in the viewport with the matrix of the canvas
+					var inverseMatrixString = getInverseMatrixString(canvas);
+					// Add element, and retrieve the position
+					var $elm = $("<div style='width:1px;height:1px;position:absolute; background: #0000ff;" +
+						"left:"+ opts.positionInViewport.x + "px; " +
+						"top:" + opts.positionInViewport.y + "px; " +
+						"'>");
+					// Set proper transformOrigin
+					var transformOrigin = getTransformOrigin(canvas);
+					setTransformOrigin($elm, transformOrigin.x, transformOrigin.y);
+					// Transform its location
+					setTransformation($elm, inverseMatrixString);
+					canvas.append($elm);
+					// Get the final, transformed location
+					var position = {x:$elm.position().left, y:$elm.position().top};
+					$elm.remove();
+					return position;
+				}
 			}
-			
 		};
 	}
 	
@@ -594,7 +614,17 @@
 	function setTransformOrigin(elm, left, top) {
 		for(var prefixID in prefixes) {
 			var prefix = prefixes[prefixID];
-			$(elm).css(prefix ? prefix+"TransformOrigin" : "transformOrigin",left+" "+top); 
+			$(elm).css(prefix ? prefix+"TransformOrigin" : "transformOrigin", left+" "+top); 
+		}
+	}
+
+	function getTransformOrigin(elm) {
+		var origin = $(elm).get(0).style.WebkitTransformOrigin || $(elm).get(0).style.MozTransformOrigin || $(elm).get(0).style.OTransformOrigin || $(elm).get(0).style.msTransformOrigin || $(elm).get(0).style.transformOrigin ||  "";
+		var result = origin.match(/^([^ ]+) ([^ ]+)$/);
+		if (result) {
+			return {x: result[1], y:result[2]};
+		} else {
+			return {x:0, y:0};
 		}
 	}
 	
@@ -653,7 +683,10 @@
 	}
 	
 	function processElementTransforms(elm) {
-		// Copy the inverse of the element transforms to the canvas
+		return getInverseMatrixString(elm);
+	}
+
+	function getInverseMatrixString(elm) {
 		var matrix = "";
 		for(var prefixID in prefixes) {
 			var prefix = prefixes[prefixID];
