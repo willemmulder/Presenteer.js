@@ -23,7 +23,7 @@
 		// Set transform-origin to top-left
 		setTransformOrigin(canvas, 0, 0);
 		var canvasZoomFactor = 1;
-		elements = getElements(elementsArgument);
+		var elements = getElements(elementsArgument);
 		var currentIndex = -1;
 		var prevIndex = -1;
 		var fullScreenSupport = document.documentElement.requestFullScreen || document.documentElement.mozRequestFullScreen || document.documentElement.webkitRequestFullScreen || document.documentElement.oRequestFullScreen;
