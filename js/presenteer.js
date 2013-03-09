@@ -377,25 +377,38 @@
 					cachePositions();
 				}
 			},
+			/*
+			* Function translates the position in the viewport to the exact position at the canvas
+			* Imagine a canvas that scales *2 with transform-origin at 0,0, then all x at the canvas
+			* end up at x*2 in the viewport. Consequently, going from a point in the viewport to canvas,
+			* we need to do viewport.x/2 to arrive at the correct canvas-position.
+			*
+			*/
 			getPositionAtCanvas : function(opts) {
 				if (opts.positionInViewport) {
 					// Multiply the position in the viewport with the matrix of the canvas
 					var inverseMatrixString = getInverseMatrixString(canvas);
-					// Add element, and retrieve the position
-					var $elm = $("<div style='width:1px;height:1px;position:absolute; background: #0000ff;" +
-						"left:"+ opts.positionInViewport.x + "px; " +
-						"top:" + opts.positionInViewport.y + "px; " +
-						"'>");
-					// Set proper transformOrigin
-					var transformOrigin = getTransformOrigin(canvas);
-					setTransformOrigin($elm, transformOrigin.x, transformOrigin.y);
-					// Transform its location
-					setTransformation($elm, inverseMatrixString);
-					canvas.append($elm);
-					// Get the final, transformed location
-					var position = {x:$elm.position().left, y:$elm.position().top};
-					$elm.remove();
-					return position;
+					var transformOriginCanvas = getTransformOrigin(canvas);
+					// Transform-origin of canvas remains the same regardless of what transformation is applied
+					// I.e. if it is 150,150 then it will remain 150,150 if a "scale(0.5) translate(100,100)" is applied
+					// So if we assume that the canvas is at 0,0 in the viewport, we can calculate the distance from our point to the transform-origin
+					var distanceFromOriginX = opts.positionInViewport.x - parseInt(transformOriginCanvas.x, 10);
+					var distanceFromOriginY = opts.positionInViewport.y - parseInt(transformOriginCanvas.y, 10);
+					
+					// Apply the inverse matrix to our point
+					var inverseMatrix = getMatrixFromMatrixString(inverseMatrixString);
+					var finalPosition = matrixMultiply(
+						inverseMatrix,
+						[
+							[distanceFromOriginX],
+							[distanceFromOriginY],
+							[1]
+						]
+					);
+					// Finally add  the transform-origin again to return to the original reference axis
+					finalPosition[0][0] += parseInt(transformOriginCanvas.x, 10);
+					finalPosition[1][0] += parseInt(transformOriginCanvas.y, 10);
+					return {x: finalPosition[0][0], y: finalPosition[1][0]};
 				}
 			}
 		};
@@ -686,6 +699,11 @@
 		return getInverseMatrixString(elm);
 	}
 
+	function getMatrixFromMatrixString(matrixString) {
+		var sylvesterMatrixString = matrixString.replace(/matrix\((.+)\, (.+)\, (.+)\, (.+)\, (.+?)p?x?\, (.+?)p?x?\)/, "[[$1,$3,$5],[$2,$4,$6],[0,0,1]]");
+		return eval(sylvesterMatrixString);
+	}
+
 	function getInverseMatrixString(elm) {
 		var matrix = "";
 		for(var prefixID in prefixes) {
@@ -698,8 +716,7 @@
 		if (matrix != "") {
 			// Calculate the inverse
 			// Or work with the raw elements via matrix.substr(7, matrix.length - 8).split(', ');
-			var sylvesterMatrixString = matrix.replace(/matrix\((.+)\, (.+)\, (.+)\, (.+)\, (.+?)p?x?\, (.+?)p?x?\)/, "\$M([[$1,$3,$5],[$2,$4,$6],[0,0,1]])");
-			var sylvesterMatrix = eval(sylvesterMatrixString);
+			var sylvesterMatrix = $M(getMatrixFromMatrixString(matrix));
 			var inverseMatrix = sylvesterMatrix.inverse();
 			// .e(row,column), 1-based
 			var inverseMatrixString = "";
@@ -713,6 +730,37 @@
 			return inverseMatrixString;
 		}
 		return "";
+	}
+
+	/*
+	var m1 = [
+	  [1,7,3],
+	  [9,4,0],
+	  [2,7,1]
+	]
+	*/
+	function matrixMultiply(m1,m2) {
+		var columnsCount1 = m1[0].length;
+		var rowsCount2 = m2.length;
+		if (columnsCount1 !== rowsCount2) {
+			return false;
+		}
+		var result = [];
+		for(var rowIndex1 in m1) {
+			var row1 = m1[rowIndex1];
+			var row2 = m2[rowIndex1];
+			// Loop over all columns in row2
+			for(var columnIndex2 in row2) {
+				var subresult = 0;
+				// Loop over all columns in row1 and multiply their values with their corresponding row in the column2
+				for(var columnIndex1 in row1) {
+					subresult += (row1[columnIndex1] * m2[columnIndex1][columnIndex2]);
+				}
+				result[rowIndex1] = result[rowIndex1] || [];
+				result[rowIndex1][columnIndex2] = subresult;
+			}
+		}
+		return result;
 	}
 		
 	/*
