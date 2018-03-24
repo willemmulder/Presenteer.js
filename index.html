@@ -30,7 +30,7 @@
 		}
 		.presentation > div { float: left; clear: both; padding: 20px; }
 		
-		#presentationcontainer1 { height: 100px; }
+		#presentationcontainer1 { height: 140px; }
 		
 		#presentationcontainer2 { height: 100px; width: 80%; float: left; }
 		#presentationcontainer2_counter { height: 100px; width: 20%; float: right; background: #bbbbdd; }
@@ -105,16 +105,25 @@
 			<div class="presentation" id="presentation1">
 				<div>Welcome to <code class="inline">Presenteer.js</code>. Click in this box to continue.</div>
 				<div>Presenteer.js a flexible HTML5 presentation tool. <br />Yet, it needs very little configuration</div>
-				<div>In fact, it can be used with one simple line of code</div>
-				<div>For example the code for this slideshow is <br /><pre class="brush: js;">var presentation = new Presenteer("#presentation1", $("#presentation1 > div"), { centerHorizontally: false });</pre></div>
+				<div>
+					For example the code for this slideshow is <br />
+					<pre class="brush: js;">
+						var movingParent = "#presentation1";
+						var targetElements = $("#presentation1 > div");
+						var options = { centerHorizontally: false };
+						var presentation = new Presenteer(movingElement, targetElements, options);
+						movingElement.on("click", function() { presentation.next(); });
+						presentation.start();</pre>
+				</div>
 				<div>We can navigate by calling <code class="inline">presentation.next();</code> or <code class="inline">presentation.prev();</code></div>
 				<div style="-webkit-transform: rotate(8deg); -moz-transform: rotate(8deg); -o-transform: rotate(8deg); -ms-transform: rotate(8deg); transform: rotate(8deg);">The nice thing is that Presenteer follows element-transforms like on this element!</div>
-				<div>There's also several constructor-options and custom callback functions.<br />Read on for more!</div>
+				<div>There are several constructor-options and custom callback functions.<br />Read on for more!</div>
 			</div>
 		</div>
+		<!--
 		<p class='source'>
-			<a href="examples/fullscreen/index.html" target="_blank">Visit a screen-filling demo presentation</a>! <small>(best in Chrome or Firefox)</small>
-		</p>
+			<a href="examples/fullscreen/index.html" target="_blank">Check a screen-filling demo presentation</a>! <small>(best in Chrome or Firefox)</small>
+		</p>-->
 		<div>
 			<h2>Introduction</h2>
 				<p>Presenteer.js a very flexible HTML5 presentation tool that works in one line of code, but is configurable with constructor options and many callbacks.</p>
@@ -145,7 +154,7 @@
 	$("#presentation1 > div"), 
 	{ followElementTransforms: false }
 );</pre>
-				<p>I set followElementTransforms to false to make Presenteer not follow element transforms. Only in that case, we don't need the Sylvester matrix library. If you <strong>do</strong> want Presenteer.js to follow element transforms (e.g. element rotations), also add the Sylvester library to your page</p>
+				<p>If followElementTransforms is to false, Presenteer will not follow element transforms. In that case, it is not required to include the Sylvester matrix library. If you <strong>do</strong> want Presenteer.js to follow element transforms (e.g. element rotations), also add the Sylvester library to your page</p>
 				<pre class="brush:js">
 					&ltscript src="js/sylvester/sylvester.min.js"></script></pre>
 				<p>And set <code>followElementTransforms: true</code>. This is also the default</p>
